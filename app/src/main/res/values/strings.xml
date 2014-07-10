@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Remember The Bacon</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="list_title">Grocery List</string>
     <string name="action_settings">Settings</string>
 
 </resources>

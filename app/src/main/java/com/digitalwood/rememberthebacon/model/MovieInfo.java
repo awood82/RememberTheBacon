@@ -9,8 +9,7 @@ public class MovieInfo {
     private String mRating;
     private String mPosterURL;
 
-    public MovieInfo(String title, String rating, String posterURL)
-    {
+    public MovieInfo(String title, String rating, String posterURL) {
         mTitle = title;
         mRating = rating;
         mPosterURL = posterURL;

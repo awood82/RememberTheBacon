@@ -5,17 +5,17 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MyListActivity extends SingleFragmentActivity {
+public class GroceryListActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new MyListFragment();
+        return new GroceryListFragment();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
+        setContentView(R.layout.activity_mylistfragment);
     }
 
     @Override
