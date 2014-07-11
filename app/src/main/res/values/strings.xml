@@ -2,7 +2,16 @@
 <resources>
 
     <string name="app_name">Remember The Bacon</string>
-    <string name="list_title">Grocery List</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Grocery List -->
+    <string name="list_title">Grocery List</string>
+    <string name="add_consumable">Add item</string>
+
+    <!-- Details -->
+    <string name="details_title">Details</string>
+    <string name="details_name">Item</string>
+    <string name="details_name_hint">Grocery item</string>
+
 
 </resources>

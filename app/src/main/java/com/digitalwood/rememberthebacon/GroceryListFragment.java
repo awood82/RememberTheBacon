@@ -1,11 +1,15 @@
 package com.digitalwood.rememberthebacon;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.digitalwood.rememberthebacon.model.Consumable;
@@ -22,6 +26,8 @@ public class GroceryListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         getActivity().setTitle(getResources().getString(R.string.list_title));
 
         initConsumables();
@@ -33,6 +39,24 @@ public class GroceryListFragment extends ListFragment {
                 mMovies);*/
         GroceryListAdapter adapter = new GroceryListAdapter(mConsumables);
         setListAdapter(adapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_grocery_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_consumable:
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initConsumables() {

@@ -9,9 +9,9 @@ import com.digitalwood.rememberthebacon.GroceryListActivity;
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
  */
-public class GroceryListTest extends ActivityUnitTestCase<GroceryListActivity> {
+public class GroceryListUnitTest extends ActivityUnitTestCase<GroceryListActivity> {
 
-    public GroceryListTest() {
+    public GroceryListUnitTest() {
         super(GroceryListActivity.class);
     }
 }

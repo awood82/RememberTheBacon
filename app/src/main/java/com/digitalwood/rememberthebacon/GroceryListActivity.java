@@ -11,7 +11,7 @@ public class GroceryListActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         return new GroceryListFragment();
     }
-
+/*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,4 +36,5 @@ public class GroceryListActivity extends SingleFragmentActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    */
 }
