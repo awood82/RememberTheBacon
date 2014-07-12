@@ -1,4 +1,4 @@
-package com.digitalwood.rememberthebacon.model;
+package com.digitalwood.rememberthebacon.common.model;
 
 /**
  * Created by Andrew on 7/9/2014.

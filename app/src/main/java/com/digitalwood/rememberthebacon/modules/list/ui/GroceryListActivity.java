@@ -1,9 +1,8 @@
-package com.digitalwood.rememberthebacon;
+package com.digitalwood.rememberthebacon.modules.list.ui;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import com.digitalwood.rememberthebacon.common.view.SingleFragmentActivity;
 
 public class GroceryListActivity extends SingleFragmentActivity {
 

@@ -1,17 +1,12 @@
-package com.digitalwood.rememberthebacon.functional;
+package com.digitalwood.rememberthebacon.functional.list;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.digitalwood.rememberthebacon.DetailsActivity;
-import com.digitalwood.rememberthebacon.DetailsFragment;
-import com.digitalwood.rememberthebacon.GroceryListActivity;
+import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.R;
 
 /**

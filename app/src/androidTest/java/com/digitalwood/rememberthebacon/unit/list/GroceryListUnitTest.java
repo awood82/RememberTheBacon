@@ -1,9 +1,8 @@
-package com.digitalwood.rememberthebacon.unit;
+package com.digitalwood.rememberthebacon.unit.list;
 
-import android.app.Activity;
 import android.test.ActivityUnitTestCase;
 
-import com.digitalwood.rememberthebacon.GroceryListActivity;
+import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 
 /**
  * Created by Andrew on 7/9/2014.

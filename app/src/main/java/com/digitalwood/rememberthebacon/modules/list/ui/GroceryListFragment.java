@@ -1,9 +1,7 @@
-package com.digitalwood.rememberthebacon;
+package com.digitalwood.rememberthebacon.modules.list.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,33 +10,39 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.digitalwood.rememberthebacon.model.Consumable;
+import com.digitalwood.rememberthebacon.R;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
+import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
+import com.digitalwood.rememberthebacon.modules.list.presenter.GroceryListPresenter;
+import com.digitalwood.rememberthebacon.modules.list.presenter.IGroceryListPresenter;
+import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListWireframe;
 
 import java.util.ArrayList;
 
 /**
  * Created by awood on 7/6/14.
  */
-public class GroceryListFragment extends ListFragment {
+public class GroceryListFragment extends ListFragment implements IGroceryListView {
 
-    private ArrayList<Consumable> mConsumables;
+    private IGroceryListPresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        getActivity().setTitle(getResources().getString(R.string.list_title));
+        mPresenter = new GroceryListPresenter(
+                this,
+                new GroceryListWireframe(getActivity()),
+                new GroceryListInteractor());
 
-        initConsumables();
-        //mMovies = (ArrayList<MovieInfo>) getArguments().getSerializable(GroceryListActivity.EXTRA_MOVIES_KEY);
+        this.setTitle(getResources().getString(R.string.list_title));
+    }
 
-        /*ArrayAdapter<MovieInfo> adapter = new ArrayAdapter<MovieInfo>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                mMovies);*/
-        GroceryListAdapter adapter = new GroceryListAdapter(mConsumables);
-        setListAdapter(adapter);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onResume();
     }
 
     @Override
@@ -51,20 +55,23 @@ public class GroceryListFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_new_consumable:
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                startActivityForResult(intent, 0);
+                mPresenter.onAddPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void initConsumables() {
-        mConsumables = new ArrayList<Consumable>();
-        for (int i = 0; i < 3; i++)
-        {
-            mConsumables.add(new Consumable("Food #" + i));
-        }
+    // IGroceryListView
+    @Override
+    public void setTitle(String title) {
+        getActivity().setTitle(title);
+    }
+
+    @Override
+    public void setItems(ArrayList<Consumable> items) {
+        GroceryListAdapter adapter = new GroceryListAdapter(items);
+        setListAdapter(adapter);
     }
 
     private class GroceryListAdapter extends ArrayAdapter<Consumable> {
@@ -85,8 +92,6 @@ public class GroceryListFragment extends ListFragment {
 
             TextView nameTextView = (TextView) convertView.findViewById(R.id.name_textView);
             nameTextView.setText(item.getName());
-            //TextView ratingTextView = (TextView) convertView.findViewById(R.id.rating_textView);
-            //ratingTextView.setText(mi.getRating());
             /*ImageView moviePosterImage = (ImageView) convertView.findViewById(R.id.movie_imageView);
             Picasso.with(getContext())
                     //.load("http://i.imgur.com/DvpvklR.png")
