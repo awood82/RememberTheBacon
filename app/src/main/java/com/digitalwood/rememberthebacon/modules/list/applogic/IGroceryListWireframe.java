@@ -7,4 +7,6 @@ package com.digitalwood.rememberthebacon.modules.list.applogic;
 public interface IGroceryListWireframe {
 
     public void navigateAddPressed();
+
+    public void navigateListItemPressed();
 }

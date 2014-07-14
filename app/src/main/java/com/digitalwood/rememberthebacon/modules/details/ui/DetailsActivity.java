@@ -1,4 +1,4 @@
-package com.digitalwood.rememberthebacon;
+package com.digitalwood.rememberthebacon.modules.details.ui;
 
 import android.support.v4.app.Fragment;
 

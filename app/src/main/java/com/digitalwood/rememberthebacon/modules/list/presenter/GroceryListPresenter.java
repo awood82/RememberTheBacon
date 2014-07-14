@@ -36,6 +36,8 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onItemClicked(int position) {
+        Consumable item = mInteractor.getConsumableAt(position);
+        mWireframe.navigateListItemPressed();
     }
 
     @Override

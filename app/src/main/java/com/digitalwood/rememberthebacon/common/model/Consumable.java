@@ -1,5 +1,7 @@
 package com.digitalwood.rememberthebacon.common.model;
 
+import java.util.UUID;
+
 /**
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
@@ -8,11 +10,16 @@ package com.digitalwood.rememberthebacon.common.model;
  */
 public class Consumable {
 
+    private UUID mId;
     private String mName;
 
-    public Consumable(String name) {
-        mName = name;
+    public Consumable() {
+        mId = UUID.randomUUID();
     }
+
+    public String toString() { return mName; }
+
+    public UUID getId() { return mId; }
 
     public String getName() {
         return mName;

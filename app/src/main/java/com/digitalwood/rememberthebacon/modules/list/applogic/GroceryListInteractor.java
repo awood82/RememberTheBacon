@@ -10,16 +10,29 @@ import java.util.ArrayList;
  * Copyright 2014
  */
 public class GroceryListInteractor implements IGroceryListInteractor {
+    ArrayList<Consumable> mConsumables;
+
     @Override
     public void loadConsumables(int numConsumables, IGroceryListInteractorCbk callback) {
-        ArrayList<Consumable> consumables = new ArrayList<Consumable>();
+        mConsumables = new ArrayList<Consumable>();
 
         //TODO: Load from Data Store
-        for (int i = 0; i < numConsumables; i++)
-        {
-            consumables.add(new Consumable("Food #" + (i + 1)));
+        for (int i = 0; i < numConsumables; i++) {
+            Consumable consumable = new Consumable();
+            consumable.setName("Food #" + (i + 1));
+            mConsumables.add(consumable);
         }
 
-        callback.onFinishedLoading(consumables);
+        if (callback != null) {
+            callback.onFinishedLoading(mConsumables);
+        }
+    }
+
+    @Override
+    public Consumable getConsumableAt(int i) { //throws ArrayIndexOutOfBoundsException {
+        //if (i < 0 || i >= mConsumables.size()) {
+
+        //}
+        return mConsumables.get(i);
     }
 }

@@ -1,5 +1,6 @@
 package com.digitalwood.rememberthebacon.modules.list.applogic;
 
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 
 /**
@@ -7,5 +8,8 @@ import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
  * Copyright 2014
  */
 public interface IGroceryListInteractor {
+
     public void loadConsumables(int numConsumables, IGroceryListInteractorCbk callback);
+    Consumable getConsumableAt(int i);
+
 }

@@ -32,6 +32,15 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
         assertEquals(1, cbk.getConsumables().size());
     }
 
+    public void testGetConsumableAt_First_ReturnsFirst() {
+        GroceryListInteractor interactor = getNewInteractor();
+        interactor.loadConsumables(1, null);
+
+        Consumable c = interactor.getConsumableAt(0);
+
+        assertEquals("Food #1", c.toString());
+    }
+
 
 
     private GroceryListInteractor getNewInteractor() {

@@ -3,7 +3,7 @@ package com.digitalwood.rememberthebacon.modules.list.applogic;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
-import com.digitalwood.rememberthebacon.DetailsActivity;
+import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 
 /**
  * Created by Andrew on 7/11/2014.
@@ -19,6 +19,12 @@ public class GroceryListWireframe implements IGroceryListWireframe {
 
     @Override
     public void navigateAddPressed() {
+        Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
+        mFragmentActivity.startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void navigateListItemPressed() {
         Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
         mFragmentActivity.startActivityForResult(intent, 0);
     }
