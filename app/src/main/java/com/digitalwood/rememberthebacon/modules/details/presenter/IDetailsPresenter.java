@@ -6,4 +6,7 @@ package com.digitalwood.rememberthebacon.modules.details.presenter;
  */
 public interface IDetailsPresenter {
 
+    public void okButtonPressed();
+
+    public void cancelButtonPressed();
 }

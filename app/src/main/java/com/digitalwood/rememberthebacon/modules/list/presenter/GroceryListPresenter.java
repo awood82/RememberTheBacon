@@ -1,5 +1,6 @@
 package com.digitalwood.rememberthebacon.modules.list.presenter;
 
+import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 import com.digitalwood.rememberthebacon.modules.list.applogic.IGroceryListInteractor;
@@ -26,6 +27,11 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onResume() {
+        Consumable c;
+        c = new Consumable();
+        c.setName("Bacon");
+        mInteractor.saveConsumable(c);
+
         mInteractor.loadConsumables(this);
     }
 

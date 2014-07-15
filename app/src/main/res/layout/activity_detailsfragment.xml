@@ -17,4 +17,22 @@
         android:layout_height="wrap_content"
         android:id="@+id/details_name_editText"
         android:hint="@string/details_name_hint"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details_ok_button"
+            android:text="@android:string/ok"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details_cancel_button"
+            android:text="@android:string/cancel"/>
+    </LinearLayout>
+
 </LinearLayout>

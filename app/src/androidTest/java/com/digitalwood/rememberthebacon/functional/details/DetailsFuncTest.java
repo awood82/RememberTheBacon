@@ -1,7 +1,10 @@
 package com.digitalwood.rememberthebacon.functional.details;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;

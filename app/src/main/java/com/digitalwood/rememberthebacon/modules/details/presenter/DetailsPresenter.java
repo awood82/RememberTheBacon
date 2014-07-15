@@ -20,5 +20,13 @@ public class DetailsPresenter implements IDetailsPresenter {
         mInteractor = interactor;
     }
 
-    //TODO: Add buttons for OK and Cancel, and call wireframe's methods
+    @Override
+    public void okButtonPressed() {
+        mWireframe.navigateOkPressed();
+    }
+
+    @Override
+    public void cancelButtonPressed() {
+        mWireframe.navigateCancelPressed();
+    }
 }
