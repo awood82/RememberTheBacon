@@ -27,10 +27,12 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onResume() {
+        // TODO: Remove test code
         Consumable c;
         c = new Consumable();
         c.setName("Bacon");
         mInteractor.saveConsumable(c);
+        //
 
         mInteractor.loadConsumables(this);
     }
