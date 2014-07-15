@@ -9,28 +9,50 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.R;
+import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
+import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWireframe;
+import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
+import com.digitalwood.rememberthebacon.modules.details.presenter.IDetailsPresenter;
 
 /**
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements IDetailsView {
     public static final String EXTRA_CONSUMABLE_ID =
             "com.digitalwood.rememberthebacon.consumable_id";
-    EditText editName;
+    private IDetailsPresenter mPresenter;
+    private EditText mEditName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.details_title);
+
+        //TODO: Syntax error here
+        /*mPresenter = new DetailsPresenter(
+                this,
+                new DetailsWireframe(getActivity()),
+                new DetailsInteractor(getActivity().getApplicationContext()));*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_detailsfragment, container, false);
 
-        editName = (EditText) getActivity().findViewById(R.id.details_name_editText);
+        mEditName = (EditText) getActivity().findViewById(R.id.details_name_editText);
 
         return v;
+    }
+
+
+    // IDetailsView
+    @Override
+    public void setTitle(String title) {
+        getActivity().setTitle(title); //R.string.details_title);
+    }
+
+    @Override
+    public void setItemName(String name) {
+        mEditName.setText(name);
     }
 }

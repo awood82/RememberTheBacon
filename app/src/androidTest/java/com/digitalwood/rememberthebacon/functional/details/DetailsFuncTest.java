@@ -17,13 +17,15 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         super(DetailsActivity.class);
     }
 
-    public void testUiAddNew_InitialState_WidgetsAreBlank() {
+/* TODO: Stopping point for tonight. Enable this test, and resume coding!
+    public void testUiAddNew_InitialState_WidgetsAreInitialized() {
         DetailsActivity activity = getActivity();
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
 
-        assertEquals("Details", activity.getTitle());
+        assertEquals("Add New", activity.getTitle());
         assertEquals("", edit.getText().toString());
     }
+    */
 /* TODO: Stopping point for tonight. Enable this test, and resume coding!
     public void testUiEdit_InitialState_WidgetsArePrepopulated() {
         Intent intent = new Intent();

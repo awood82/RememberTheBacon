@@ -10,4 +10,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
         super(Application.class);
     }
+
+    public void testAddingAnItem_IncreasesTheGroceryListByOne() {
+        //TODO: Easier to do w/ Robotium...
+
+    }
 }

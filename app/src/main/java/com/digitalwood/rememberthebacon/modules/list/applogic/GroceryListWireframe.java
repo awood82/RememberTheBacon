@@ -20,12 +20,12 @@ public class GroceryListWireframe implements IGroceryListWireframe {
     @Override
     public void navigateAddPressed() {
         Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
-        mFragmentActivity.startActivityForResult(intent, 0);
+        mFragmentActivity.startActivity(intent);
     }
 
     @Override
     public void navigateListItemPressed() {
         Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
-        mFragmentActivity.startActivityForResult(intent, 0);
+        mFragmentActivity.startActivity(intent);
     }
 }

@@ -26,7 +26,7 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onResume() {
-        mInteractor.loadConsumables(20, this);
+        mInteractor.loadConsumables(this);
     }
 
     @Override

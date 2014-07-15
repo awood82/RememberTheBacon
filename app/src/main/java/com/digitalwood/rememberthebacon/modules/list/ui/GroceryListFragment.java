@@ -35,7 +35,7 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
         mPresenter = new GroceryListPresenter(
                 this,
                 new GroceryListWireframe(getActivity()),
-                new GroceryListInteractor());
+                new GroceryListInteractor(getActivity().getApplicationContext()));
 
         this.setTitle(getResources().getString(R.string.list_title));
     }

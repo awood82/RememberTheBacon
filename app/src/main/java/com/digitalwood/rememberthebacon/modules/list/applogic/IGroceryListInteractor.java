@@ -9,7 +9,10 @@ import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
  */
 public interface IGroceryListInteractor {
 
-    public void loadConsumables(int numConsumables, IGroceryListInteractorCbk callback);
+    public boolean saveConsumable(Consumable c);
+
+    public void loadConsumables(IGroceryListInteractorCbk callback);
+
     Consumable getConsumableAt(int i);
 
 }
