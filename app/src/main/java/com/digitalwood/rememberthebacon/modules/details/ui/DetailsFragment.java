@@ -21,7 +21,7 @@ import com.digitalwood.rememberthebacon.modules.details.presenter.IDetailsPresen
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
  */
-public class DetailsFragment extends Fragment implements IDetailsView {
+public class DetailsFragment extends Fragment implements IDetailsView, View.OnClickListener {
     public static final String EXTRA_CONSUMABLE_ID =
             "com.digitalwood.rememberthebacon.consumable_id";
     private IDetailsPresenter mPresenter;
@@ -47,21 +47,22 @@ public class DetailsFragment extends Fragment implements IDetailsView {
         mOkButton = (Button) v.findViewById(R.id.details_ok_button);
         mCancelButton = (Button) v.findViewById(R.id.details_cancel_button);
 
-        mOkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.okButtonPressed();
-            }
-        });
-
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.cancelButtonPressed();
-            }
-        });
+        mOkButton.setOnClickListener(this);
+        mCancelButton.setOnClickListener(this);
 
         return v;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.details_ok_button:
+                mPresenter.okButtonPressed();
+                break;
+            case R.id.details_cancel_button:
+                mPresenter.cancelButtonPressed();
+                break;
+        }
     }
 
     // IDetailsView
