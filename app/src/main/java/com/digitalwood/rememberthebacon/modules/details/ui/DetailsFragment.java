@@ -75,13 +75,6 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     public void onResume() {
         super.onResume();
         mPresenter.onResume(mConsumableIndex);
-
-        /* TODO: How can I automatically make the soft keyboard appear so the user
-        can just start typing?
-        mEditName.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mEditName, InputMethodManager.SHOW_IMPLICIT);
-        */
     }
 
     @Override
