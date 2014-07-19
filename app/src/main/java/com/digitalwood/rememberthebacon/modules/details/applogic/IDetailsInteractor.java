@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public interface IDetailsInteractor {
 
-    public boolean saveConsumable(Consumable c);
+    public boolean saveConsumable(int index, Consumable c);
 
     public void loadConsumable(int index, IDetailsInteractorCbk cbk);
 }

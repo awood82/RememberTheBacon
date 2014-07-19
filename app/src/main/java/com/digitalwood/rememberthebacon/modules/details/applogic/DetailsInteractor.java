@@ -5,7 +5,6 @@ import android.content.Context;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.IDetailsInteractorCbk;
-import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 
 /**
@@ -21,12 +20,16 @@ public class DetailsInteractor implements IDetailsInteractor {
     }
 
     @Override
-    public boolean saveConsumable(Consumable c) {
+    public boolean saveConsumable(int index, Consumable c) {
         if (c.getName().isEmpty()) {
             return false;
         }
 
-        return ListStore.getInstance(mContext).add(c);
+        if (index == DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET) {
+            return ListStore.getInstance(mContext).add(c);
+        } else {
+            return ListStore.getInstance(mContext).set(index, c);
+        }
     }
 
     @Override

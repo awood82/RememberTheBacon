@@ -15,6 +15,7 @@ public class DetailsPresenter implements IDetailsPresenter, IDetailsInteractorCb
     private IDetailsView mView;
     private IDetailsWireframe mWireframe;
     private IDetailsInteractor mInteractor;
+    private int mIndex;
 
     public DetailsPresenter(IDetailsView view, IDetailsWireframe wireframe, IDetailsInteractor interactor) {
         mView = view;
@@ -24,12 +25,13 @@ public class DetailsPresenter implements IDetailsPresenter, IDetailsInteractorCb
 
     @Override
     public void onResume(int index) {
+        mIndex = index;
         mInteractor.loadConsumable(index, this);
     }
 
     @Override
     public void okButtonPressed() {
-        mInteractor.saveConsumable(new Consumable(mView.getItemName()));
+        mInteractor.saveConsumable(mIndex, new Consumable(mView.getItemName()));
         mWireframe.navigateOkPressed();
     }
 

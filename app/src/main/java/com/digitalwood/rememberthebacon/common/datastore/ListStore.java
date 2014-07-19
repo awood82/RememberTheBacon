@@ -35,6 +35,16 @@ public class ListStore {
         return mConsumables.add(consumable);
     }
 
+    public boolean set(int index, Consumable consumable) {
+        try {
+            mConsumables.set(index, consumable);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        } finally {
+            return true;
+        }
+    }
+
     public Consumable get(int index) {
         return mConsumables.get(index);
     }

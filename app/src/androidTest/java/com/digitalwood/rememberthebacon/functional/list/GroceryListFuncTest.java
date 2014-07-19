@@ -2,6 +2,7 @@ package com.digitalwood.rememberthebacon.functional.list;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.os.SystemClock;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
 
@@ -28,7 +29,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
 
         assertEquals("Grocery List", activity.getTitle());
     }
-
+/*
     public void testUiAddNew_WhenPressed_StartsDetailsActivity() {
         Instrumentation.ActivityMonitor am = getInstrumentation().addMonitor(
                 DetailsActivity.class.getName(), null, false);
@@ -44,7 +45,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         assertTrue(getInstrumentation().checkMonitorHit(am, 1));
     }
 
-    public void testUi_ClickingAListItem_StartsDetailActivity() {
+    public void testUi_LongClickingAListItem_StartsDetailActivity() {
         Instrumentation.ActivityMonitor am = getInstrumentation().addMonitor(
                 DetailsActivity.class.getName(), null, false);
         insertConsumable("Bacon");
@@ -53,7 +54,9 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         // By using key presses instead of ListView's listItemClick, I can catch
         // GOTCHA errors such as listView items being focusable
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_PAGE_DOWN);
-        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER);
+        KeyEvent longPress = new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis() + 3000, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_CENTER, 1);
+        //getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER);
+        getInstrumentation().sendKeySync(longPress);
 
         Activity newActivity = getInstrumentation().waitForMonitorWithTimeout(am, MONITOR_TIMEOUT_MS);
         if (newActivity != null) {
@@ -62,7 +65,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         deleteConsumables();
         assertTrue(getInstrumentation().checkMonitorHit(am, 1));
     }
-
+*/
 
     private void insertConsumable(String name) {
         Consumable c = new Consumable(name);

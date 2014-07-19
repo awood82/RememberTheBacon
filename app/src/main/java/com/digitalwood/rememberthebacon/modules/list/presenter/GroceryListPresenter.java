@@ -27,6 +27,7 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onResume() {
+        mView.setTitle("Grocery List");
         mInteractor.loadConsumables(this);
     }
 
@@ -37,6 +38,11 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onItemClicked(int position) {
+        // TODO: Check box?
+    }
+
+    @Override
+    public void onItemLongClicked(int position) {
         //Consumable item = mInteractor.getConsumableAt(position);
         mWireframe.navigateListItemPressed(position);
     }

@@ -16,7 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/details_name_editText"
-        android:hint="@string/details_name_hint"/>
+        android:hint="@string/details_name_hint"
+        android:focusable="true"/>
 
     <LinearLayout
         android:layout_width="match_parent"

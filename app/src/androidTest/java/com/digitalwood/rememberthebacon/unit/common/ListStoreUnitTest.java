@@ -36,10 +36,6 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(1, store.size());
     }
 
-    private ListStore getListStoreInstance() {
-        return ListStore.getInstance(getContext());
-    }
-
     void testDeleteAll_AfterCalling_SizeIsZero() {
         ListStore store = getListStoreInstance();
         store.add(new Consumable());
@@ -47,5 +43,45 @@ public class ListStoreUnitTest extends AndroidTestCase{
         store.deleteAll();
 
         assertEquals(0, store.size());
+    }
+
+    void testSet_NegativeIndex_ReturnsFalse() {
+        ListStore store = getListStoreInstance();
+
+        boolean result = store.set(-1, new Consumable("Bacon"));
+
+        assertEquals(false, result);
+    }
+
+    void testSet_InvalidIndex_ReturnsFalse() {
+        ListStore store = getListStoreInstance();
+        store.add(new Consumable("Bacon"));
+
+        boolean result = store.set(3, new Consumable("Eggs"));
+
+        assertEquals(false, result);
+    }
+
+    void testSet_ValidIndex_ReturnsTrue() {
+        ListStore store = getListStoreInstance();
+        store.add(new Consumable("Bacon"));
+
+        boolean result = store.set(0, new Consumable("Eggs"));
+
+        assertEquals(true, result);
+    }
+
+    void testSet_ValidIndex_ChangesTheValue() {
+        ListStore store = getListStoreInstance();
+        store.add(new Consumable("Bacon"));
+
+        boolean result = store.set(0, new Consumable("Eggs"));
+
+        assertEquals("Eggs", store.get(0).getName());
+    }
+
+
+    private ListStore getListStoreInstance() {
+        return ListStore.getInstance(getContext());
     }
 }

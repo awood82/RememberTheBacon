@@ -8,6 +8,7 @@ import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWirefram
 import com.digitalwood.rememberthebacon.modules.details.applogic.IDetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.applogic.IDetailsWireframe;
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
+import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.details.ui.IDetailsView;
 
 import static org.mockito.Mockito.*;
@@ -27,6 +28,6 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
 
         presenter.okButtonPressed();
 
-        verify(mockInteractor).saveConsumable(new Consumable("Eggs"));
+        verify(mockInteractor).saveConsumable(anyInt(), new Consumable("Eggs"));
     }
 }

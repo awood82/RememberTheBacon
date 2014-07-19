@@ -7,12 +7,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.digitalwood.rememberthebacon.R;
-import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 import com.digitalwood.rememberthebacon.modules.list.presenter.GroceryListPresenter;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by awood on 7/6/14.
  */
-public class GroceryListFragment extends ListFragment implements IGroceryListView {
+public class GroceryListFragment extends ListFragment implements IGroceryListView, AdapterView.OnItemLongClickListener {
 
     private IGroceryListPresenter mPresenter;
 
@@ -37,13 +37,12 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
                 this,
                 new GroceryListWireframe(getActivity()),
                 new GroceryListInteractor(getActivity().getApplicationContext()));
-
-        this.setTitle(getResources().getString(R.string.list_title));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getListView().setOnItemLongClickListener(this);
         mPresenter.onResume();
     }
 
@@ -67,6 +66,12 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         mPresenter.onItemClicked(position);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+        mPresenter.onItemLongClicked(position);
+        return true;
     }
 
     // IGroceryListView

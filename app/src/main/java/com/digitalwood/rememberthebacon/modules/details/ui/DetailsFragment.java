@@ -1,11 +1,13 @@
 package com.digitalwood.rememberthebacon.modules.details.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -73,6 +75,13 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     public void onResume() {
         super.onResume();
         mPresenter.onResume(mConsumableIndex);
+
+        /* TODO: How can I automatically make the soft keyboard appear so the user
+        can just start typing?
+        mEditName.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditName, InputMethodManager.SHOW_IMPLICIT);
+        */
     }
 
     @Override

@@ -45,6 +45,10 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         assertEquals("Bacon", edit.getText().toString());
     }
 
+    public void testUi_InitialState_EditBoxIsFocused() {
+        //TODO
+    }
+
 
     private void addItemToListStore(String name) {
         ListStore.getInstance(null).add(new Consumable(name));
