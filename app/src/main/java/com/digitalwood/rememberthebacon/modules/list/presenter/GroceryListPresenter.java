@@ -27,13 +27,6 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onResume() {
-        // TODO: Remove test code
-        Consumable c;
-        c = new Consumable();
-        c.setName("Bacon");
-        mInteractor.saveConsumable(c);
-        //
-
         mInteractor.loadConsumables(this);
     }
 
@@ -44,8 +37,8 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onItemClicked(int position) {
-        Consumable item = mInteractor.getConsumableAt(position);
-        mWireframe.navigateListItemPressed();
+        //Consumable item = mInteractor.getConsumableAt(position);
+        mWireframe.navigateListItemPressed(position);
     }
 
     @Override

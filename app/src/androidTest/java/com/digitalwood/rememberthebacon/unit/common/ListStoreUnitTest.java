@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ListStoreUnitTest extends AndroidTestCase{
     void testDeleteAll_AfterCalling_DoesNotInvalidateTheListStore() {
-        ListStore store = ListStore.getInstance(getContext());
+        ListStore store = getListStoreInstance();
 
         store.deleteAll();
 
@@ -21,7 +21,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     void testAdd_InitialSize_IsZero() {
-        ListStore store = ListStore.getInstance(getContext());
+        ListStore store = getListStoreInstance();
 
         // Do nothing
 
@@ -29,15 +29,19 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     void testAdd_AfterAddingOne_SizeIsOne() {
-        ListStore store = ListStore.getInstance(getContext());
+        ListStore store = getListStoreInstance();
 
         store.add(new Consumable());
 
         assertEquals(1, store.size());
     }
 
+    private ListStore getListStoreInstance() {
+        return ListStore.getInstance(getContext());
+    }
+
     void testDeleteAll_AfterCalling_SizeIsZero() {
-        ListStore store = ListStore.getInstance(getContext());
+        ListStore store = getListStoreInstance();
         store.add(new Consumable());
 
         store.deleteAll();

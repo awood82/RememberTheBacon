@@ -21,15 +21,6 @@ public class GroceryListInteractor implements IGroceryListInteractor {
     }
 
     @Override
-    public boolean saveConsumable(Consumable c) {
-        if (c.getName().isEmpty()) {
-            return false;
-        }
-
-        return ListStore.getInstance(mContext).add(c);
-    }
-
-    @Override
     public void loadConsumables(IGroceryListInteractorCbk callback) {
         ArrayList<Consumable> mConsumables = new ArrayList<Consumable>();
 

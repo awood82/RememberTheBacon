@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,17 +15,31 @@ import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWirefram
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
 import com.digitalwood.rememberthebacon.modules.details.presenter.IDetailsPresenter;
 
+import java.util.UUID;
+
 /**
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
  */
 public class DetailsFragment extends Fragment implements IDetailsView, View.OnClickListener {
-    public static final String EXTRA_CONSUMABLE_ID =
-            "com.digitalwood.rememberthebacon.consumable_id";
+    public static final String EXTRA_CONSUMABLE_INDEX =
+            "com.digitalwood.rememberthebacon.consumable_index";
+    public static final int EXTRA_CONSUMABLE_INDEX_NOT_SET = -1;
     private IDetailsPresenter mPresenter;
     private EditText mEditName;
     private Button mOkButton;
     private Button mCancelButton;
+    private int mConsumableIndex;
+
+    public static DetailsFragment newInstance(int consumableIndex) {
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_CONSUMABLE_INDEX, consumableIndex);
+
+        DetailsFragment fragment = new DetailsFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +49,10 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
                 this,
                 new DetailsWireframe(getActivity()),
                 new DetailsInteractor(getActivity().getApplicationContext()));
+
+        mConsumableIndex = getArguments().getInt(
+                EXTRA_CONSUMABLE_INDEX,
+                EXTRA_CONSUMABLE_INDEX_NOT_SET);
     }
 
     @Override
@@ -51,6 +67,12 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
         mCancelButton.setOnClickListener(this);
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onResume(mConsumableIndex);
     }
 
     @Override
@@ -69,6 +91,11 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     @Override
     public void setTitle(String title) {
         getActivity().setTitle(title); //R.string.details_title);
+    }
+
+    @Override
+    public String getItemName() {
+        return mEditName.getText().toString();
     }
 
     @Override

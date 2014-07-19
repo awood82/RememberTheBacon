@@ -8,5 +8,5 @@ public interface IGroceryListWireframe {
 
     public void navigateAddPressed();
 
-    public void navigateListItemPressed();
+    public void navigateListItemPressed(int index);
 }

@@ -17,7 +17,14 @@ public class Consumable {
         mId = UUID.randomUUID();
     }
 
+    public Consumable(String name) {
+        this();
+        mName = name;
+    }
+
     public String toString() { return mName; }
+
+    public boolean equals(Consumable o) { return mName.equals(o.getName()); }
 
     public UUID getId() { return mId; }
 

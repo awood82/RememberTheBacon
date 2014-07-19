@@ -70,49 +70,14 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
         assertNull(c);
     }
 */
-    public void testSaveConsumable_WithEmptyName_Fails() {
-        GroceryListInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable();
-        c.setName("");
-
-        boolean result = interactor.saveConsumable(c);
-
-        assertEquals(false, result);
-    }
-
-    public void testSaveConsumable_WithValidName_Succeeds() {
-        GroceryListInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable();
-        c.setName("Bacon");
-
-        boolean result = interactor.saveConsumable(c);
-
-        assertEquals(true, result);
-    }
-
-    public void testLoadConsumables_AfterSavingOne_ReturnsOneWithCorrectId() {
-        GroceryListInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable();
-        c.setName("1");
-        interactor.saveConsumable(c);
-        InteractorCbk cbk = getNewInteractorCbk();
-        UUID expectedId = c.getId();
-
-        interactor.loadConsumables(cbk);
-
-        assertEquals(expectedId, cbk.getConsumables().get(0).getId());
-    }
 
     public void testLoadConsumables_AfterSavingOne_ReturnsOneWithCorrectName() {
-        GroceryListInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable();
-        c.setName("Bacon");
-        interactor.saveConsumable(c);
+        GroceryListInteractor interactor = getNewInteractorWithOneItem();
         InteractorCbk cbk = getNewInteractorCbk();
 
         interactor.loadConsumables(cbk);
 
-        assertEquals("Bacon", cbk.getConsumables().get(0).getName());
+        assertEquals(FIRST_ITEM_NAME, cbk.getConsumables().get(0).getName());
     }
 
 
@@ -121,11 +86,10 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
     }
 
     private GroceryListInteractor getNewInteractorWithOneItem() {
-        GroceryListInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable();
-        c.setName(FIRST_ITEM_NAME);
-        interactor.saveConsumable(c);
-        return interactor;
+        Consumable c = new Consumable(FIRST_ITEM_NAME);
+        ListStore.getInstance(getContext()).add(c);
+
+        return getNewInteractor();
     }
 
     private InteractorCbk getNewInteractorCbk() {

@@ -8,5 +8,7 @@ public interface IDetailsView {
 
     public void setTitle(String title);
 
+    public String getItemName();
+
     public void setItemName(String name);
 }

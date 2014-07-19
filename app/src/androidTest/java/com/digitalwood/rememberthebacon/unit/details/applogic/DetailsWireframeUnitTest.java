@@ -9,12 +9,13 @@ import android.widget.Button;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 
+
 /**
  * Created by awood on 7/15/14.
  */
-public class DetailsUnitTest extends ActivityUnitTestCase<DetailsActivity> {
+public class DetailsWireframeUnitTest extends ActivityUnitTestCase<DetailsActivity> {
 
-    public DetailsUnitTest() {
+    public DetailsWireframeUnitTest() {
         super(DetailsActivity.class);
     }
 

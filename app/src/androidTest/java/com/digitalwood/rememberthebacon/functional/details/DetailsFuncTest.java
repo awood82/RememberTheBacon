@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
+
+import java.util.List;
 
 /**
  * Created by Andrew on 7/10/2014.
@@ -20,7 +24,6 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         super(DetailsActivity.class);
     }
 
-/* TODO: Stopping point for tonight. Enable this test, and resume coding!
     public void testUiAddNew_InitialState_WidgetsAreInitialized() {
         DetailsActivity activity = getActivity();
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
@@ -28,16 +31,26 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         assertEquals("Add New", activity.getTitle());
         assertEquals("", edit.getText().toString());
     }
-    */
-/* TODO: Stopping point for tonight. Enable this test, and resume coding!
+
     public void testUiEdit_InitialState_WidgetsArePrepopulated() {
         Intent intent = new Intent();
-        intent.putExtra(DetailsFragment.EXTRA_CONSUMABLE_ID, 1);
+        intent.putExtra(DetailsFragment.EXTRA_CONSUMABLE_INDEX, 0);
+        setActivityIntent(intent);
+        addItemToListStore("Bacon");
         DetailsActivity activity = getActivity();
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
+        cleanupListStore();
 
-        assertEquals("Details", activity.getTitle());
+        assertEquals("Edit Details", activity.getTitle());
         assertEquals("Bacon", edit.getText().toString());
     }
-*/
+
+
+    private void addItemToListStore(String name) {
+        ListStore.getInstance(null).add(new Consumable(name));
+    }
+
+    private void cleanupListStore() {
+        ListStore.getInstance(getActivity()).deleteAll();
+    }
 }

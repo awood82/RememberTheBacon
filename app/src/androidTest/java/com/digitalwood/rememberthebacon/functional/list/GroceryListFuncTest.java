@@ -5,6 +5,8 @@ import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
 
+import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.R;
@@ -45,6 +47,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
     public void testUi_ClickingAListItem_StartsDetailActivity() {
         Instrumentation.ActivityMonitor am = getInstrumentation().addMonitor(
                 DetailsActivity.class.getName(), null, false);
+        insertConsumable("Bacon");
         GroceryListActivity activity = getActivity();
 
         // By using key presses instead of ListView's listItemClick, I can catch
@@ -56,6 +59,17 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         if (newActivity != null) {
             newActivity.finish();
         }
+        deleteConsumables();
         assertTrue(getInstrumentation().checkMonitorHit(am, 1));
+    }
+
+
+    private void insertConsumable(String name) {
+        Consumable c = new Consumable(name);
+        ListStore.getInstance(getInstrumentation().getContext()).add(c);
+    }
+
+    private void deleteConsumables() {
+        ListStore.getInstance(getInstrumentation().getContext()).deleteAll();
     }
 }
