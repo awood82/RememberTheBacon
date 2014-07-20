@@ -11,5 +11,5 @@ import java.util.ArrayList;
 public interface IGroceryListView {
     public void setTitle(String title);
     public void setItems(ArrayList<Consumable> items);
-    public void checkItem(int index);
+    public void toggleItemBought(int index);
 }

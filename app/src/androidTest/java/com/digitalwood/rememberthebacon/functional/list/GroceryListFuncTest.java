@@ -61,7 +61,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         // By using key presses instead of ListView's listItemClick, I can catch
         // GOTCHA errors such as listView items being focusable
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_PAGE_DOWN);
-        KeyEvent longPress = new KeyEvent(SystemClock.uptimeMillis()+1000, SystemClock.uptimeMillis() + 3000, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_CENTER, 1);
+        KeyEvent longPress = new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis() + 3000, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_CENTER, 1);
         getInstrumentation().sendKeySync(longPress);
         getInstrumentation().waitForIdleSync();
 
@@ -107,9 +107,28 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
         assertTrue(check.isChecked());
     }
 */
+    public void testIntegration_WhenReturningToGroceryListScreen_PreviouslyToggledCheckboxesAreStillToggled() {
+        insertBoughtConsumable("Bacon");
+        GroceryListActivity activity = getActivity();
+
+        deleteConsumables();
+        GroceryListFragment fragment = (GroceryListFragment) activity.getSupportFragmentManager()
+                .findFragmentById(R.id.fragmentContainer);
+        ListView lv = fragment.getListView();
+        CheckBox check = (CheckBox)lv.getChildAt(0).findViewById(R.id.bought_checkBox);
+        assertTrue(check.isChecked());
+    }
+
+
 
     private void insertConsumable(String name) {
         Consumable c = new Consumable(name);
+        ListStore.getInstance(getInstrumentation().getContext()).add(c);
+    }
+
+    private void insertBoughtConsumable(String name) {
+        Consumable c = new Consumable(name);
+        c.setBought(true);
         ListStore.getInstance(getInstrumentation().getContext()).add(c);
     }
 

@@ -1,6 +1,5 @@
 package com.digitalwood.rememberthebacon.modules.list.presenter;
 
-import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 import com.digitalwood.rememberthebacon.modules.list.applogic.IGroceryListInteractor;
@@ -32,23 +31,24 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
     }
 
     @Override
+    public void onFinishedLoading(ArrayList<Consumable> consumables) {
+        mView.setItems(consumables);
+    }
+
+    @Override
     public void onAddPressed() {
         mWireframe.navigateAddPressed();
     }
 
     @Override
     public void onItemClicked(int position) {
-        mView.checkItem(position);
+        mView.toggleItemBought(position);
+        mInteractor.toggleConsumableBought(position);
     }
 
     @Override
     public void onItemLongClicked(int position) {
         //Consumable item = mInteractor.getConsumableAt(position);
         mWireframe.navigateListItemPressed(position);
-    }
-
-    @Override
-    public void onFinishedLoading(ArrayList<Consumable> consumables) {
-        mView.setItems(consumables);
     }
 }

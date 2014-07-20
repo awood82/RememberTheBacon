@@ -11,6 +11,8 @@ public interface IGroceryListInteractor {
 
     public void loadConsumables(IGroceryListInteractorCbk callback);
 
-    Consumable getConsumableAt(int i);
+    Consumable getConsumableAt(int position);
+
+    void toggleConsumableBought(int position);
 
 }

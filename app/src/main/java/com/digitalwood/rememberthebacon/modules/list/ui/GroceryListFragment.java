@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -84,10 +86,11 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
     public void setItems(ArrayList<Consumable> items) {
         GroceryListAdapter adapter = new GroceryListAdapter(items);
         setListAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void checkItem(int index) {
+    public void toggleItemBought(int index) {
         getListView()
                 .getChildAt(index)
                 .findViewById(R.id.bought_checkBox)
@@ -112,14 +115,9 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
 
             TextView nameTextView = (TextView) convertView.findViewById(R.id.name_textView);
             nameTextView.setText(item.getName());
-            /*ImageView moviePosterImage = (ImageView) convertView.findViewById(R.id.movie_imageView);
-            Picasso.with(getContext())
-                    //.load("http://i.imgur.com/DvpvklR.png")
-                    .load("http://www.637363.com/scans/public/842/0444" + (56 + position) + ".jpg")
-                    .placeholder(android.R.drawable.gallery_thumb)
-                    .error(android.R.drawable.stat_notify_error)
-                    .resize(200,200)
-                    .into(moviePosterImage); */
+            CheckBox boughtCheckBox = (CheckBox) convertView.findViewById(R.id.bought_checkBox);
+            boughtCheckBox.setChecked(item.isBought());
+
             return convertView;
         }
     }

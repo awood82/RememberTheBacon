@@ -12,6 +12,7 @@ public class Consumable {
 
     private UUID mId;
     private String mName;
+    private boolean mBought;
 
     public Consumable() {
         mId = UUID.randomUUID();
@@ -35,4 +36,8 @@ public class Consumable {
     public void setName(String name) {
         mName = name;
     }
+
+    public boolean isBought() { return mBought; }
+
+    public void setBought(boolean bought) { mBought = bought; }
 }

@@ -37,11 +37,19 @@ public class GroceryListInteractor implements IGroceryListInteractor {
     }
 
     @Override
-    public Consumable getConsumableAt(int i) { //throws ArrayIndexOutOfBoundsException {
-        /*if (i < 0 || i >= mConsumables.size()) {
+    public Consumable getConsumableAt(int position) { //throws ArrayIndexOutOfBoundsException {
+        /*if (position < 0 || position >= mConsumables.size()) {
             return null;
         }*/
-        return ListStore.getInstance(mContext).get(i);
+        return ListStore.getInstance(mContext).get(position);
+    }
+
+    @Override
+    public void toggleConsumableBought(int position) {
+        ListStore ls = ListStore.getInstance(mContext);
+        Consumable c = ls.get(position);
+        c.setBought(!c.isBought()); // Toggle
+        ls.set(position, c);
     }
 
 }
