@@ -38,7 +38,7 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onItemClicked(int position) {
-        // TODO: Check box?
+        mView.checkItem(position);
     }
 
     @Override

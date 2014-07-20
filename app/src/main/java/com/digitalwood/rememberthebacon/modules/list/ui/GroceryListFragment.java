@@ -69,7 +69,7 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         mPresenter.onItemLongClicked(position);
         return true;
     }
@@ -84,6 +84,14 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
     public void setItems(ArrayList<Consumable> items) {
         GroceryListAdapter adapter = new GroceryListAdapter(items);
         setListAdapter(adapter);
+    }
+
+    @Override
+    public void checkItem(int index) {
+        getListView()
+                .getChildAt(index)
+                .findViewById(R.id.bought_checkBox)
+                .performClick();
     }
 
     private class GroceryListAdapter extends ArrayAdapter<Consumable> {
