@@ -1,5 +1,8 @@
 package com.digitalwood.rememberthebacon.common.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.UUID;
 
 /**
@@ -29,6 +32,8 @@ public class Consumable {
 
     public UUID getId() { return mId; }
 
+    public void setId(UUID id) { mId = id; }
+
     public String getName() {
         return mName;
     }
@@ -40,4 +45,5 @@ public class Consumable {
     public boolean isBought() { return mBought; }
 
     public void setBought(boolean bought) { mBought = bought; }
+
 }

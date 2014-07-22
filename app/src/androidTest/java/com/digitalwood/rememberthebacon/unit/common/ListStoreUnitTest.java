@@ -2,17 +2,34 @@ package com.digitalwood.rememberthebacon.unit.common;
 
 import android.test.AndroidTestCase;
 
+import com.digitalwood.rememberthebacon.common.datastore.IListStoreSerializer;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
+import org.mockito.Mock;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mock.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Andrew on 7/14/2014.
  * Copyright 2014
  */
 public class ListStoreUnitTest extends AndroidTestCase{
-    void testDeleteAll_AfterCalling_DoesNotInvalidateTheListStore() {
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        // Ensure that the singleton is reset
+        ListStore store = getListStoreInstance();
+        store.deleteAll();
+    }
+
+    public void testDeleteAll_AfterCalling_DoesNotInvalidateTheListStore() {
         ListStore store = getListStoreInstance();
 
         store.deleteAll();
@@ -20,7 +37,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertNotNull(store.listIterator());
     }
 
-    void testAdd_InitialSize_IsZero() {
+    public void testAdd_InitialSize_IsZero() {
         ListStore store = getListStoreInstance();
 
         // Do nothing
@@ -28,7 +45,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(0, store.size());
     }
 
-    void testAdd_AfterAddingOne_SizeIsOne() {
+    public void testAdd_AfterAddingOne_SizeIsOne() {
         ListStore store = getListStoreInstance();
 
         store.add(new Consumable());
@@ -36,7 +53,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(1, store.size());
     }
 
-    void testDeleteAll_AfterCalling_SizeIsZero() {
+    public void testDeleteAll_AfterCalling_SizeIsZero() {
         ListStore store = getListStoreInstance();
         store.add(new Consumable());
 
@@ -45,7 +62,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(0, store.size());
     }
 
-    void testSet_NegativeIndex_ReturnsFalse() {
+    public void testSet_NegativeIndex_ReturnsFalse() {
         ListStore store = getListStoreInstance();
 
         boolean result = store.set(-1, new Consumable("Bacon"));
@@ -53,16 +70,16 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(false, result);
     }
 
-    void testSet_InvalidIndex_ReturnsFalse() {
+    public void testSet_InvalidIndex_ReturnsFalse() {
         ListStore store = getListStoreInstance();
         store.add(new Consumable("Bacon"));
 
-        boolean result = store.set(3, new Consumable("Eggs"));
+        boolean result = store.set(123, new Consumable("Eggs"));
 
         assertEquals(false, result);
     }
 
-    void testSet_ValidIndex_ReturnsTrue() {
+    public void testSet_ValidIndex_ReturnsTrue() {
         ListStore store = getListStoreInstance();
         store.add(new Consumable("Bacon"));
 
@@ -71,7 +88,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         assertEquals(true, result);
     }
 
-    void testSet_ValidIndex_ChangesTheValue() {
+    public void testSet_ValidIndex_ChangesTheValue() {
         ListStore store = getListStoreInstance();
         store.add(new Consumable("Bacon"));
 
@@ -79,6 +96,35 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
         assertEquals("Eggs", store.get(0).getName());
     }
+
+    public void testSerialize_WhenSavingNoObjects_CallsSaveList() {
+        ListStore store = getListStoreInstance();
+        IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
+
+        store.serialize(mockSerializer);
+
+        verify(mockSerializer, times(1)).saveList(any(ArrayList.class));
+    }
+
+    public void testSerialize_WhenSavingOneObject_CallsSaveList() {
+        ListStore store = getListStoreInstance();
+        store.add(new Consumable("Bacon"));
+        IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
+
+        store.serialize(mockSerializer);
+
+        verify(mockSerializer, times(1)).saveList(any(ArrayList.class));
+    }
+
+    public void testDeserialize_WhenLoading_CallsLoadList() {
+        ListStore store = getListStoreInstance();
+        IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
+
+        store.deserialize(mockSerializer);
+
+        verify(mockSerializer, times(1)).loadList();
+    }
+
 
 
     private ListStore getListStoreInstance() {

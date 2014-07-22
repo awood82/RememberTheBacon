@@ -8,7 +8,6 @@ import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Andrew on 7/11/2014.
@@ -86,10 +85,11 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
     }
 
     private GroceryListInteractor getNewInteractorWithOneItem() {
+        GroceryListInteractor interactor = getNewInteractor();
         Consumable c = new Consumable(FIRST_ITEM_NAME);
         ListStore.getInstance(getContext()).add(c);
 
-        return getNewInteractor();
+        return interactor;
     }
 
     private InteractorCbk getNewInteractorCbk() {
@@ -100,8 +100,12 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
         private ArrayList<Consumable> mConsumables;
 
         @Override
-        public void onFinishedLoading (ArrayList<Consumable> consumables) {
+        public void onFinishedLoading(ArrayList<Consumable> consumables) {
             mConsumables = consumables;
+        }
+
+        @Override
+        public void onFinishedSaving() {
         }
 
         public ArrayList<Consumable> getConsumables() {

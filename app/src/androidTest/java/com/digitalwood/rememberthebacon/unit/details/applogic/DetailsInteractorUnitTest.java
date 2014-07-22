@@ -43,6 +43,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
     public void testSaveConsumable_EditDetailsWithValidName_Succeeds() {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("Bacon");
+        interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c);
 
         boolean result = interactor.saveConsumable(0, c);
 

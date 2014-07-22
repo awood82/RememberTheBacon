@@ -12,4 +12,5 @@ public interface IGroceryListView {
     public void setTitle(String title);
     public void setItems(ArrayList<Consumable> items);
     public void toggleItemBought(int index);
+    public void toast(int id);
 }

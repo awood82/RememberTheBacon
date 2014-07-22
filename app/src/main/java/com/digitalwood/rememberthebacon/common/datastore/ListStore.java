@@ -36,13 +36,11 @@ public class ListStore {
     }
 
     public boolean set(int index, Consumable consumable) {
-        try {
-            mConsumables.set(index, consumable);
-        } catch (IndexOutOfBoundsException e) {
+        if (index < 0 || index >= mConsumables.size()) {
             return false;
-        } finally {
-            return true;
         }
+        mConsumables.set(index, consumable);
+        return true;
     }
 
     public Consumable get(int index) {
@@ -59,5 +57,13 @@ public class ListStore {
 
     public int size() {
         return mConsumables.size();
+    }
+
+    public void serialize(IListStoreSerializer serializer) {
+        serializer.saveList(mConsumables);
+    }
+
+    public void deserialize(IListStoreSerializer serializer) {
+        mConsumables = serializer.loadList();
     }
 }

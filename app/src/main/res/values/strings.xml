@@ -7,6 +7,7 @@
     <!-- Grocery List -->
     <string name="list_title">Grocery List</string>
     <string name="add_consumable">Add item</string>
+    <string name="saved_list">Saved!</string>
 
     <!-- Details -->
     <string name="details_title">Details</string>

@@ -11,6 +11,8 @@ import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresent
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.details.ui.IDetailsView;
 
+import org.mockito.ArgumentCaptor;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -18,7 +20,14 @@ import static org.mockito.Mockito.*;
  * Copyright 2014
  */
 public class DetailsPresenterUnitTest extends AndroidTestCase {
-/* TODO: Fix Mockito imports. This test fails on the first mock for some reason...
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        System.setProperty("dexmaker.dexcache", getContext().getCacheDir().getPath());
+    }
+
     public void testOkButtonPressed_WhenNameIsSetInView_ItemWithThatNameIsSaved() {
         IDetailsView mockView = mock(IDetailsView.class);
         IDetailsWireframe mockWireframe = mock(DetailsWireframe.class);
@@ -28,7 +37,10 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
 
         presenter.okButtonPressed();
 
-        verify(mockInteractor).saveConsumable(anyInt(), new Consumable("Eggs"));
+        //verify(mockInteractor).saveConsumable(anyInt(), eq( eggs ));
+        ArgumentCaptor<Consumable> captor = ArgumentCaptor.forClass(Consumable.class);
+        verify(mockInteractor).saveConsumable(anyInt(), captor.capture());
+        assertEquals("Eggs", captor.getValue().getName());
     }
-    */
+
 }

@@ -10,4 +10,5 @@ import java.util.ArrayList;
  */
 public interface IGroceryListInteractorCbk {
     public void onFinishedLoading(ArrayList<Consumable> consumables);
+    public void onFinishedSaving();
 }

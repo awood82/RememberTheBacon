@@ -3,6 +3,7 @@ package com.digitalwood.rememberthebacon.modules.list.applogic;
 import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 
@@ -14,10 +15,14 @@ import java.util.ListIterator;
  * Copyright 2014
  */
 public class GroceryListInteractor implements IGroceryListInteractor {
+    public static final String LIST_STORE_FILENAME = "list.json";
     Context mContext;
 
     public GroceryListInteractor(Context appContext) {
         mContext = appContext;
+        // Load the list from disk the first time
+        ListStore.getInstance(mContext)
+                .deserialize(new ListStoreJsonSerializer(mContext, LIST_STORE_FILENAME));
     }
 
     @Override
@@ -34,6 +39,13 @@ public class GroceryListInteractor implements IGroceryListInteractor {
         if (callback != null) {
             callback.onFinishedLoading(mConsumables);
         }
+    }
+
+    @Override
+    public void saveConsumables(IGroceryListInteractorCbk callback) {
+        ListStore.getInstance(mContext).serialize(
+                new ListStoreJsonSerializer(mContext, LIST_STORE_FILENAME));
+        callback.onFinishedSaving();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.digitalwood.rememberthebacon.modules.list.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
  * Created by awood on 7/6/14.
  */
 public class GroceryListFragment extends ListFragment implements IGroceryListView, AdapterView.OnItemLongClickListener {
-
+private static final String TAG="Frag";
     private IGroceryListPresenter mPresenter;
 
     @Override
@@ -39,6 +41,7 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
                 this,
                 new GroceryListWireframe(getActivity()),
                 new GroceryListInteractor(getActivity().getApplicationContext()));
+        Log.d(TAG, "onCreate");
     }
 
     @Override
@@ -46,6 +49,32 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
         super.onResume();
         getListView().setOnItemLongClickListener(this);
         mPresenter.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
     }
 
     @Override
@@ -95,6 +124,15 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
                 .getChildAt(index)
                 .findViewById(R.id.bought_checkBox)
                 .performClick();
+    }
+
+    @Override
+    public void toast(int id) {
+        Toast.makeText(
+                getActivity().getApplicationContext(),
+                getResources().getText(id),
+                Toast.LENGTH_SHORT)
+        .show();
     }
 
     private class GroceryListAdapter extends ArrayAdapter<Consumable> {

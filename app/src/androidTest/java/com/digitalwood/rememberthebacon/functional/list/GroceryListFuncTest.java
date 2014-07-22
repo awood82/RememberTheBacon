@@ -11,11 +11,15 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
+import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by Andrew on 7/9/2014.
@@ -74,7 +78,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
     }*/
 
     public void testUi_ClickingAListItem_MarksItAsBought() {
-        insertConsumable("Bacon");
+        insertConsumable("Bacon", false);
         GroceryListActivity activity = getActivity();
 
         // By using key presses instead of ListView's listItemClick, I can catch
@@ -108,7 +112,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
     }
 */
     public void testIntegration_WhenReturningToGroceryListScreen_PreviouslyToggledCheckboxesAreStillToggled() {
-        insertBoughtConsumable("Bacon");
+        insertConsumable("Bacon", true);
         GroceryListActivity activity = getActivity();
 
         deleteConsumables();
@@ -121,18 +125,27 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
 
 
 
-    private void insertConsumable(String name) {
+    private void insertConsumable(String name, boolean bought) {
+        ArrayList<Consumable> list = new ArrayList<Consumable>();
         Consumable c = new Consumable(name);
+        c.setBought(bought);
         ListStore.getInstance(getInstrumentation().getContext()).add(c);
-    }
-
-    private void insertBoughtConsumable(String name) {
-        Consumable c = new Consumable(name);
-        c.setBought(true);
-        ListStore.getInstance(getInstrumentation().getContext()).add(c);
+        list.add(c);
+        ListStoreJsonSerializer serializer = getListStoreJsonSerializer();
+        serializer.saveList(list);
     }
 
     private void deleteConsumables() {
         ListStore.getInstance(getInstrumentation().getContext()).deleteAll();
+
+        ArrayList<Consumable> list = new ArrayList<Consumable>();
+        ListStoreJsonSerializer serializer = getListStoreJsonSerializer();
+        serializer.saveList(list);
+    }
+
+    private ListStoreJsonSerializer getListStoreJsonSerializer() {
+        return new ListStoreJsonSerializer(
+                getInstrumentation().getContext(),
+                GroceryListInteractor.LIST_STORE_FILENAME);
     }
 }

@@ -13,4 +13,6 @@ public interface IGroceryListPresenter {
     public void onItemLongClicked(int position);
 
     void onResume();
+
+    void onPause();
 }
