@@ -11,4 +11,8 @@ public interface IDetailsView {
     public String getItemName();
 
     public void setItemName(String name);
+
+    public void showKeyboard();
+
+    public void hideKeyboard();
 }

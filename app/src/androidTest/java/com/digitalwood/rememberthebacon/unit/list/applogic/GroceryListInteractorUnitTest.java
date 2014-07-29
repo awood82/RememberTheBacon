@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
+    private static final String TEST_LIST_STORE_FILENAME = "mytest.json";
     private static final String FIRST_ITEM_NAME = "Bacon";
 
     // NOTE: Only needed while ListStore is a Singleton
@@ -81,7 +82,7 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
 
     private GroceryListInteractor getNewInteractor() {
-        return new GroceryListInteractor(getContext());
+        return new GroceryListInteractor(getContext(), TEST_LIST_STORE_FILENAME);
     }
 
     private GroceryListInteractor getNewInteractorWithOneItem() {
@@ -112,6 +113,4 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
             return mConsumables;
         }
     }
-
 }
-

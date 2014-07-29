@@ -15,14 +15,18 @@ import java.util.ListIterator;
  * Copyright 2014
  */
 public class GroceryListInteractor implements IGroceryListInteractor {
-    public static final String LIST_STORE_FILENAME = "list.json";
+    public static final String DEFAULT_LIST_STORE_FILENAME = "list.json";
     Context mContext;
 
-    public GroceryListInteractor(Context appContext) {
+    public GroceryListInteractor(Context appContext, String listStoreFilename) {
         mContext = appContext;
         // Load the list from disk the first time
         ListStore.getInstance(mContext)
-                .deserialize(new ListStoreJsonSerializer(mContext, LIST_STORE_FILENAME));
+                .deserialize(new ListStoreJsonSerializer(mContext, listStoreFilename));
+    }
+
+    public GroceryListInteractor(Context appContext) {
+        this(appContext, DEFAULT_LIST_STORE_FILENAME);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class GroceryListInteractor implements IGroceryListInteractor {
     @Override
     public void saveConsumables(IGroceryListInteractorCbk callback) {
         ListStore.getInstance(mContext).serialize(
-                new ListStoreJsonSerializer(mContext, LIST_STORE_FILENAME));
+                new ListStoreJsonSerializer(mContext, DEFAULT_LIST_STORE_FILENAME));
         callback.onFinishedSaving();
     }
 

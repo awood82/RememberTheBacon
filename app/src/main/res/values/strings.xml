@@ -4,10 +4,18 @@
     <string name="app_name">Remember The Bacon</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Navigation Drawer -->
+    <string name="navdrawer_accessibility_open">Open drawer</string>
+    <string name="navdrawer_accessibility_close">Close drawer</string>
+    <string name="navdrawer_new_list">New list</string>
+    <string name="navdrawer_open_list">Open list</string>
+    <string name="navdrawer_recent_placeholder">Recent</string>
+    <string name="navdrawer_login">Login</string>
+
     <!-- Grocery List -->
     <string name="list_title">Grocery List</string>
-    <string name="add_consumable">Add item</string>
-    <string name="saved_list">Saved!</string>
+    <string name="list_add_consumable">Add item</string>
+    <string name="list_saved_toast">Saved!</string>
 
     <!-- Details -->
     <string name="details_title">Details</string>

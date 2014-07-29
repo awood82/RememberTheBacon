@@ -7,17 +7,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.R;
+import com.digitalwood.rememberthebacon.common.view.MasterActivity;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWireframe;
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
 import com.digitalwood.rememberthebacon.modules.details.presenter.IDetailsPresenter;
-
-import java.util.UUID;
 
 /**
  * Created by Andrew on 7/9/2014.
@@ -59,12 +60,14 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_detailsfragment, container, false);
+        View v = inflater.inflate(R.layout.fragment_details, container, false);
 
+        // Setup input views
         mEditName = (EditText) v.findViewById(R.id.details_name_editText);
         mOkButton = (Button) v.findViewById(R.id.details_ok_button);
         mCancelButton = (Button) v.findViewById(R.id.details_cancel_button);
 
+        // Setup view listeners
         mOkButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
 
@@ -75,6 +78,12 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     public void onResume() {
         super.onResume();
         mPresenter.onResume(mConsumableIndex);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.onPause();
     }
 
     @Override
@@ -103,5 +112,19 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     @Override
     public void setItemName(String name) {
         mEditName.setText(name);
+    }
+
+    @Override
+    public void showKeyboard() {
+        // Automatically display the keyboard so the user can begin to enter text
+        InputMethodManager mgr = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(mEditName, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @Override
+    public void hideKeyboard() {
+        // Automatically hide the keyboard
+        InputMethodManager mgr = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(mEditName.getWindowToken(), 0);
     }
 }

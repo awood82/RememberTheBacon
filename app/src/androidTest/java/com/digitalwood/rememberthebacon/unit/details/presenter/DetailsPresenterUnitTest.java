@@ -28,6 +28,26 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
         System.setProperty("dexmaker.dexcache", getContext().getCacheDir().getPath());
     }
 
+    public void testOnResume_CallsShowKeyboard() {
+        IDetailsView mockView = mock(IDetailsView.class);
+        DetailsInteractor mockInteractor = mock(DetailsInteractor.class);
+        DetailsPresenter presenter = new DetailsPresenter(mockView, null, mockInteractor);
+
+        presenter.onResume(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET);
+
+        verify(mockView, times(1)).showKeyboard();
+    }
+
+    public void testOnPause_CallsHideKeyboard() {
+        IDetailsView mockView = mock(IDetailsView.class);
+        DetailsInteractor mockInteractor = mock(DetailsInteractor.class);
+        DetailsPresenter presenter = new DetailsPresenter(mockView, null, mockInteractor);
+
+        presenter.onPause();
+
+        verify(mockView, times(1)).hideKeyboard();
+    }
+
     public void testOkButtonPressed_WhenNameIsSetInView_ItemWithThatNameIsSaved() {
         IDetailsView mockView = mock(IDetailsView.class);
         IDetailsWireframe mockWireframe = mock(DetailsWireframe.class);

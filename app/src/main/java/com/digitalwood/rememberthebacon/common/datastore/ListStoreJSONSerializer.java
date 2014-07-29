@@ -1,6 +1,7 @@
 package com.digitalwood.rememberthebacon.common.datastore;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.digitalwood.rememberthebacon.common.adapter.ConsumableToJsonAdapter;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
@@ -57,8 +58,9 @@ public class ListStoreJsonSerializer implements IListStoreSerializer {
             writer.write(array.toString());
             mNumSaved = array.length();
         } catch (IOException e) {
-        }
-        finally {
+            Log.e("JSON", e.getMessage());
+            e.printStackTrace();
+        } finally {
             try {
                 if (writer != null) {
                     writer.close();

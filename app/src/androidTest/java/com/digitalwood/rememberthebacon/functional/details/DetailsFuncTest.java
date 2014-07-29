@@ -1,31 +1,28 @@
 package com.digitalwood.rememberthebacon.functional.details;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
-import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
-
-import java.util.List;
+import com.digitalwood.rememberthebacon.common.view.TestFragmentActivity;
 
 /**
  * Created by Andrew on 7/10/2014.
  * Copyright 2014
  */
-public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsActivity> {
+public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
+
     public DetailsFuncTest() {
-        super(DetailsActivity.class);
+        super(TestFragmentActivity.class);
     }
 
     public void testUiAddNew_InitialState_WidgetsAreInitialized() {
-        DetailsActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
+
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
 
         assertEquals("Add New", activity.getTitle());
@@ -37,7 +34,8 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         intent.putExtra(DetailsFragment.EXTRA_CONSUMABLE_INDEX, 0);
         setActivityIntent(intent);
         addItemToListStore("Bacon");
-        DetailsActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
+
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
         cleanupListStore();
 
@@ -45,9 +43,9 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
         assertEquals("Bacon", edit.getText().toString());
     }
 
+    /* TODO
     public void testUi_InitialState_EditBoxIsFocused() {
-        //TODO
-    }
+    }*/
 
 
     private void addItemToListStore(String name) {
@@ -56,5 +54,13 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<DetailsAct
 
     private void cleanupListStore() {
         ListStore.getInstance(getActivity()).deleteAll();
+    }
+
+    private TestFragmentActivity setUpActivity() {
+        TestFragmentActivity activity = getActivity();
+        activity.createFragmentUnderTest(R.layout.fragment_details);
+        getInstrumentation().waitForIdleSync();
+
+        return activity;
     }
 }

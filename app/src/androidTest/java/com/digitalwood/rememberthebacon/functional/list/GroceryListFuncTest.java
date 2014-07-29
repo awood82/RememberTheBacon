@@ -2,7 +2,9 @@ package com.digitalwood.rememberthebacon.functional.list;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.os.SystemClock;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.view.KeyEvent;
@@ -13,11 +15,15 @@ import android.widget.ListView;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
+import com.digitalwood.rememberthebacon.common.view.TestFragmentActivity;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
+import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
-import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.R;
+import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListFragment;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 
@@ -25,34 +31,36 @@ import java.util.ArrayList;
  * Created by Andrew on 7/9/2014.
  * Copyright 2014
  */
-public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<GroceryListActivity> {
+public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
 
-    private static final int MONITOR_TIMEOUT_MS = 1000;
+    private static final String TEST_LIST_STORE_FILENAME = "test.json";
 
     public GroceryListFuncTest() {
-        super(GroceryListActivity.class);
+        super(TestFragmentActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        setUpIntent(); // Call first
     }
 
     public void testUi_InitialState_WidgetsAreInExpectedStates() {
-        GroceryListActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
 
         assertEquals("Grocery List", activity.getTitle());
     }
 
     public void testUiAddNew_WhenPressed_StartsDetailsActivity() throws InterruptedException {
-        Instrumentation.ActivityMonitor am = getInstrumentation().addMonitor(
-                DetailsActivity.class.getName(), null, false);
-        GroceryListActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
 
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
         getInstrumentation().invokeMenuActionSync(activity, R.id.menu_item_new_consumable, 0);
         getInstrumentation().waitForIdleSync();
 
-        Activity newActivity = getInstrumentation().waitForMonitorWithTimeout(am, MONITOR_TIMEOUT_MS);
-        if (newActivity != null) {
-            newActivity.finish();
-        }
-        assertTrue(getInstrumentation().checkMonitorHit(am, 1));
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment currentFragment = fm.findFragmentById(R.id.fragmentContainer);
+        assertTrue(currentFragment instanceof DetailsFragment);
     }
 
     /* TODO: Figure out how to simulate a long press and hold
@@ -79,41 +87,49 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
 
     public void testUi_ClickingAListItem_MarksItAsBought() {
         insertConsumable("Bacon", false);
-        GroceryListActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
 
         // By using key presses instead of ListView's listItemClick, I can catch
         // GOTCHA errors such as listView items being focusable
-        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_PAGE_DOWN);
+        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
+        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
+        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
+        //getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_PAGE_DOWN);
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER);
         getInstrumentation().waitForIdleSync();
 
-        deleteConsumables();
         GroceryListFragment fragment = (GroceryListFragment) activity.getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentContainer);
         ListView lv = fragment.getListView();
         CheckBox check = (CheckBox)lv.getChildAt(0).findViewById(R.id.bought_checkBox);
+        deleteConsumables();
         assertTrue(check.isChecked());
     }
-/*
-    @UiThreadTest
+
     public void testUi_ItemClick_TogglesCheckBox() {
-        insertConsumable("Bacon");
-        GroceryListActivity activity = getActivity();
+        insertConsumable("Bacon", false);
+        TestFragmentActivity activity = setUpActivity();
         GroceryListFragment fragment = (GroceryListFragment) activity.getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentContainer);
-        ListView lv = fragment.getListView();
-        View view = lv.getChildAt(0);
+        final ListView lv = fragment.getListView();
+        final View view = lv.getChildAt(0);
 
-        lv.performItemClick(view, 0, 0);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lv.performItemClick(view, 0, 0);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
 
         deleteConsumables();
         CheckBox check = (CheckBox)view.findViewById(R.id.bought_checkBox);
         assertTrue(check.isChecked());
     }
-*/
+
     public void testIntegration_WhenReturningToGroceryListScreen_PreviouslyToggledCheckboxesAreStillToggled() {
         insertConsumable("Bacon", true);
-        GroceryListActivity activity = getActivity();
+        TestFragmentActivity activity = setUpActivity();
 
         deleteConsumables();
         GroceryListFragment fragment = (GroceryListFragment) activity.getSupportFragmentManager()
@@ -125,18 +141,32 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
 
 
 
+    private void setUpIntent() {
+        Intent intent = new Intent();
+        intent.putExtra(GroceryListFragment.EXTRA_LIST_STORE_FILENAME, TEST_LIST_STORE_FILENAME);
+        setActivityIntent(intent);
+    }
+
+    private TestFragmentActivity setUpActivity() {
+        TestFragmentActivity activity = getActivity();
+        activity.createFragmentUnderTest(R.layout.fragment_mylist);
+        getInstrumentation().waitForIdleSync();
+
+        return activity;
+    }
+
     private void insertConsumable(String name, boolean bought) {
         ArrayList<Consumable> list = new ArrayList<Consumable>();
         Consumable c = new Consumable(name);
         c.setBought(bought);
-        ListStore.getInstance(getInstrumentation().getContext()).add(c);
+        ListStore.getInstance(getActivity()).add(c);
         list.add(c);
         ListStoreJsonSerializer serializer = getListStoreJsonSerializer();
         serializer.saveList(list);
     }
 
     private void deleteConsumables() {
-        ListStore.getInstance(getInstrumentation().getContext()).deleteAll();
+        ListStore.getInstance(getActivity()).deleteAll();
 
         ArrayList<Consumable> list = new ArrayList<Consumable>();
         ListStoreJsonSerializer serializer = getListStoreJsonSerializer();
@@ -145,7 +175,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<Grocer
 
     private ListStoreJsonSerializer getListStoreJsonSerializer() {
         return new ListStoreJsonSerializer(
-                getInstrumentation().getContext(),
-                GroceryListInteractor.LIST_STORE_FILENAME);
+                getActivity(),
+                TEST_LIST_STORE_FILENAME);
     }
 }

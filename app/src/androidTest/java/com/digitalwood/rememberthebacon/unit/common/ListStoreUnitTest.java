@@ -21,6 +21,15 @@ import static org.mockito.Mockito.*;
 public class ListStoreUnitTest extends AndroidTestCase{
 
     @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // Ensure that the singleton is reset
+        ListStore store = getListStoreInstance();
+        store.deleteAll();
+    }
+
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
 

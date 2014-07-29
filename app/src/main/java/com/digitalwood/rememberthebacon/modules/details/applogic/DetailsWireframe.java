@@ -16,17 +16,17 @@ public class DetailsWireframe implements IDetailsWireframe {
 
     @Override
     public void navigateOkPressed() {
-        mFragmentActivity.finish();
+        mFragmentActivity.getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public void navigateCancelPressed() {
-        mFragmentActivity.finish();
+        mFragmentActivity.getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public void navigateBackPressed() {
-        mFragmentActivity.finish();
+        mFragmentActivity.getSupportFragmentManager().popBackStack();
     }
 
 }

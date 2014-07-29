@@ -10,6 +10,8 @@ public interface IDetailsPresenter {
 
     public void onResume(int index);
 
+    public void onPause();
+
     public void okButtonPressed();
 
     public void cancelButtonPressed();

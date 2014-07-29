@@ -31,6 +31,6 @@ public class GroceryListPresenterUnitTest extends TestCase {
 
         presenter.onPause();
 
-        verify(mockInteractor, times(1)).saveConsumables((IGroceryListInteractorCbk)anyObject());
+        verify(mockInteractor, times(1)).saveConsumables((IGroceryListInteractorCbk) anyObject());
     }
 }

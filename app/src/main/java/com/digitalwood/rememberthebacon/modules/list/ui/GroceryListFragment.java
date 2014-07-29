@@ -2,7 +2,6 @@ package com.digitalwood.rememberthebacon.modules.list.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
+import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 import com.digitalwood.rememberthebacon.modules.list.presenter.GroceryListPresenter;
 import com.digitalwood.rememberthebacon.modules.list.presenter.IGroceryListPresenter;
@@ -29,19 +28,35 @@ import java.util.ArrayList;
  * Created by awood on 7/6/14.
  */
 public class GroceryListFragment extends ListFragment implements IGroceryListView, AdapterView.OnItemLongClickListener {
-private static final String TAG="Frag";
+    public static final String EXTRA_LIST_STORE_FILENAME =
+            "com.digitalwood.rememberthebacon.list_store_filename";
     private IGroceryListPresenter mPresenter;
+
+    public static GroceryListFragment newInstance(String listStoreFilename) {
+        Bundle args = new Bundle();
+        args.putString(EXTRA_LIST_STORE_FILENAME, listStoreFilename);
+
+        GroceryListFragment fragment = new GroceryListFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        String listStoreFilename = getArguments().getString(
+                EXTRA_LIST_STORE_FILENAME);
+        if (listStoreFilename == null || listStoreFilename.isEmpty()) {
+            listStoreFilename = GroceryListInteractor.DEFAULT_LIST_STORE_FILENAME;
+        }
+
         mPresenter = new GroceryListPresenter(
                 this,
                 new GroceryListWireframe(getActivity()),
-                new GroceryListInteractor(getActivity().getApplicationContext()));
-        Log.d(TAG, "onCreate");
+                new GroceryListInteractor(getActivity().getApplicationContext(), listStoreFilename));
     }
 
     @Override
@@ -49,32 +64,12 @@ private static final String TAG="Frag";
         super.onResume();
         getListView().setOnItemLongClickListener(this);
         mPresenter.onResume();
-        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mPresenter.onPause();
-        Log.d(TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
     }
 
     @Override

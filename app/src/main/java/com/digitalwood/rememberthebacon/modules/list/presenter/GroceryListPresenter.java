@@ -43,7 +43,7 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
 
     @Override
     public void onFinishedSaving() {
-        mView.toast(R.string.saved_list);
+        mView.toast(R.string.list_saved_toast);
     }
 
     @Override

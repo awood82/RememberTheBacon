@@ -1,8 +1,11 @@
 package com.digitalwood.rememberthebacon.modules.list.applogic;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
+import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 
@@ -20,14 +23,21 @@ public class GroceryListWireframe implements IGroceryListWireframe {
 
     @Override
     public void navigateAddPressed() {
-        Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
-        mFragmentActivity.startActivity(intent);
+        FragmentManager fm = mFragmentActivity.getSupportFragmentManager();
+        Fragment fragment = DetailsFragment.newInstance(-1);
+        fm.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void navigateListItemPressed(int index) {
-        Intent intent = new Intent(mFragmentActivity, DetailsActivity.class);
-        intent.putExtra(DetailsFragment.EXTRA_CONSUMABLE_INDEX, index);
-        mFragmentActivity.startActivity(intent);
+        FragmentManager fm = mFragmentActivity.getSupportFragmentManager();
+        Fragment fragment = DetailsFragment.newInstance(index);
+        fm.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

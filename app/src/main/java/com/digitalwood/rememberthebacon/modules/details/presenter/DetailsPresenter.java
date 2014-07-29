@@ -27,6 +27,12 @@ public class DetailsPresenter implements IDetailsPresenter, IDetailsInteractorCb
     public void onResume(int index) {
         mIndex = index;
         mInteractor.loadConsumable(index, this);
+        mView.showKeyboard();
+    }
+
+    @Override
+    public void onPause() {
+        mView.hideKeyboard();
     }
 
     @Override
