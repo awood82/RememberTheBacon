@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * Created by Andrew on 7/20/2014.
  * Copyright 2014
  */
-public class ListStoreJsonSerializer implements IListStoreSerializer {
+public class ListStoreJsonSerializer extends BaseListStoreSerializer {
 
     private Context mContext;
     private String mFilename;
@@ -39,24 +39,14 @@ public class ListStoreJsonSerializer implements IListStoreSerializer {
     }
 
     @Override
-    public int saveList(ArrayList<Consumable> list) {
-        int mNumSaved = -1;
-
-        JSONArray array = new JSONArray();
-        try {
-            for (Consumable item : list) {
-                array.put(ConsumableToJsonAdapter.toJson(item));
-            }
-        } catch (JSONException e) {
-            // We can continue. Save whatever we can.
-        }
-
+    protected int saveJsonArray(JSONArray jsonArray) {
+        int numSaved = -1;
         Writer writer = null;
         try {
             OutputStream os = mContext.openFileOutput(mFilename, Context.MODE_PRIVATE);
             writer = new OutputStreamWriter(os);
-            writer.write(array.toString());
-            mNumSaved = array.length();
+            writer.write(jsonArray.toString());
+            numSaved = jsonArray.length();
         } catch (IOException e) {
             Log.e("JSON", e.getMessage());
             e.printStackTrace();
@@ -69,12 +59,12 @@ public class ListStoreJsonSerializer implements IListStoreSerializer {
             }
         }
 
-        return mNumSaved;
+        return numSaved;
     }
 
     @Override
-    public ArrayList<Consumable> loadList() {
-        ArrayList<Consumable> list = new ArrayList<Consumable>();
+    protected JSONArray loadJsonArray() {
+        JSONArray jsonArray = new JSONArray();
         BufferedReader reader = null;
         try {
             InputStream is = mContext.openFileInput(mFilename);
@@ -87,18 +77,12 @@ public class ListStoreJsonSerializer implements IListStoreSerializer {
             }
 
             // Parse the JSON
-            JSONArray array = (JSONArray)new JSONTokener(jsonString.toString()).nextValue();
-            for (int i = 0; i < array.length(); i++) {
-                Consumable c = ConsumableToJsonAdapter.fromJson(array.getJSONObject(i));
-                list.add(c);
-            }
+            jsonArray = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
         } catch (FileNotFoundException e) {
         } catch (IOException e2) {
         } catch (JSONException e3) {
         }
 
-        return list;
+        return jsonArray;
     }
-
-
 }

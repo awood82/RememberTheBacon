@@ -21,10 +21,13 @@ import android.view.ViewGroup;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListFragment;
 import com.digitalwood.rememberthebacon.modules.navdrawer.ui.NavigationDrawerFragment;
+import com.parse.Parse;
 
 
 public class MasterActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    protected boolean mSetUpParse;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -40,6 +43,16 @@ public class MasterActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master);
+
+        if (!mSetUpParse) {
+            // Setup Parse.com for saving objects in the cloud
+            Parse.enableLocalDatastore(this); // Well... locally for now
+            Parse.initialize(
+                    this,
+                    "jDGd9RxDbhqSYNigzBItbllUFfclXvg2fAVWSoY9",
+                    "UyfioaJyqzVqWfWX1lDp15cQNe7KgyTH5KUtSqJc");
+            mSetUpParse = true;
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);

@@ -92,9 +92,6 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
         // By using key presses instead of ListView's listItemClick, I can catch
         // GOTCHA errors such as listView items being focusable
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
-        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
-        getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
-        //getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_PAGE_DOWN);
         getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER);
         getInstrumentation().waitForIdleSync();
 
