@@ -7,6 +7,7 @@ import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteract
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWireframe;
 import com.digitalwood.rememberthebacon.modules.details.applogic.IDetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.applogic.IDetailsWireframe;
+import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorSaveCbk;
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.details.ui.IDetailsView;
@@ -59,7 +60,7 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
 
         //verify(mockInteractor).saveConsumable(anyInt(), eq( eggs ));
         ArgumentCaptor<Consumable> captor = ArgumentCaptor.forClass(Consumable.class);
-        verify(mockInteractor).saveConsumable(anyInt(), captor.capture());
+        verify(mockInteractor).saveConsumable(anyInt(), captor.capture(), any(IDetailsInteractorSaveCbk.class));
         assertEquals("Eggs", captor.getValue().getName());
     }
 

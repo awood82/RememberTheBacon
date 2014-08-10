@@ -4,17 +4,24 @@ import android.test.AndroidTestCase;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
-import com.digitalwood.rememberthebacon.modules.details.IDetailsInteractorCbk;
+import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorLoadCbk;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
+import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorSaveCbk;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
-
-import java.util.ArrayList;
 
 /**
  * Created by Andrew on 7/18/2014.
  * Copyright 2014
  */
 public class DetailsInteractorUnitTest extends AndroidTestCase {
+
+    boolean mCallbackFired;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mCallbackFired = false;
+    }
 
     @Override
     protected void tearDown() throws Exception {
@@ -26,48 +33,62 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("");
 
-        boolean result = interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c);
+        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        interactor.saveConsumable(
+                DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET,
+                c,
+                saveCbk);
 
-        assertEquals(false, result);
+        waitForCallback();
+        assertEquals(false, saveCbk.mWasSuccess);
     }
 
     public void testSaveConsumable_AddNewWithValidName_Succeeds() {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("Bacon");
 
-        boolean result = interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c);
+        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c, saveCbk);
 
-        assertEquals(true, result);
+        waitForCallback();
+        assertEquals(true, saveCbk.mWasSuccess);
+        assertEquals(true, saveCbk.mWasAdded);
     }
 
     public void testSaveConsumable_EditDetailsWithValidName_Succeeds() {
         DetailsInteractor interactor = getNewInteractor();
+        addItem(interactor, "Vegetables");
         Consumable c = new Consumable("Bacon");
-        interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c);
 
-        boolean result = interactor.saveConsumable(0, c);
+        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        interactor.saveConsumable(0, c, saveCbk);
 
-        assertEquals(true, result);
+        waitForCallback();
+        assertEquals(true, saveCbk.mWasSuccess);
+        assertEquals(false, saveCbk.mWasAdded);
     }
 
     public void testSaveConsumable_EditDetailsWithEmptyName_Fails() {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("");
 
-        boolean result = interactor.saveConsumable(0, c);
+        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        interactor.saveConsumable(0, c, saveCbk);
 
-        assertEquals(false, result);
+        waitForCallback();
+        assertEquals(false, saveCbk.mWasSuccess);
     }
 
     public void testSaveConsumable_EditDetailsWithChangedName_ChangesTheItem() {
         DetailsInteractor interactor = getNewInteractor();
-        addItem(interactor, "Bacon");
+        addItem(interactor, "Vegetables");
 
-        editItem(interactor, 0, "Eggs");
+        editItem(interactor, 0, "Bacon");
 
-        InteractorCbk cbk = getNewInteractorCbk();
+        InteractorLoadCbk cbk = getNewInteractorLoadCbk();
         interactor.loadConsumable(0, cbk);
-        assertEquals("Eggs", cbk.getConsumable().getName());
+        waitForCallback();
+        assertEquals("Bacon", cbk.mConsumable.getName());
     }
 
     public void testSaveConsumable_EditDetailsWithMultipleItemsAdded_ChangesTheItem() {
@@ -78,46 +99,79 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
         editItem(interactor, 1, "Eggs");
 
-        InteractorCbk cbk = getNewInteractorCbk();
+        InteractorLoadCbk cbk = getNewInteractorLoadCbk();
         interactor.loadConsumable(0, cbk);
-        assertEquals("Bacon", cbk.getConsumable().getName());
+        assertEquals("Bacon", cbk.mConsumable.getName());
         interactor.loadConsumable(1, cbk);
-        assertEquals("Eggs", cbk.getConsumable().getName());
+        assertEquals("Eggs", cbk.mConsumable.getName());
         interactor.loadConsumable(2, cbk);
-        assertEquals("Bacon 3", cbk.getConsumable().getName());
+        assertEquals("Bacon 3", cbk.mConsumable.getName());
     }
+
 
 
     private DetailsInteractor getNewInteractor() {
         return new DetailsInteractor(getContext());
     }
 
-    private InteractorCbk getNewInteractorCbk() {
-        return new InteractorCbk();
+    private InteractorLoadCbk getNewInteractorLoadCbk() {
+        return new InteractorLoadCbk();
     }
 
-    private class InteractorCbk implements IDetailsInteractorCbk {
+    private InteractorSaveCbk getNewInteractorSaveCbk() {
+        return new InteractorSaveCbk();
+    }
+
+    private class InteractorLoadCbk implements IDetailsInteractorLoadCbk {
         private Consumable mConsumable;
 
         @Override
         public void onFinishedLoading (Consumable consumable) {
             mConsumable = consumable;
+            mCallbackFired = true;
         }
+    }
 
-        public Consumable getConsumable() {
-            return mConsumable;
+    private class InteractorSaveCbk implements IDetailsInteractorSaveCbk {
+        boolean mWasSuccess;
+        boolean mWasAdded;
+
+        @Override
+        public void onFinishedSaving (boolean wasSuccess, boolean wasAdded) {
+            mWasSuccess = wasSuccess;
+            mWasAdded = wasAdded;
+            mCallbackFired = true;
         }
     }
 
     private void addItem(DetailsInteractor interactor, String name) {
         interactor.saveConsumable(
                 DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET,
-                new Consumable(name));
+                new Consumable(name),
+                new IDetailsInteractorSaveCbk() {
+                    @Override
+                    public void onFinishedSaving(boolean wasSuccess, boolean wasAdded) {
+                        mCallbackFired = true;
+                    }
+                });
+
+        waitForCallback();
+        mCallbackFired = false; // reset
     }
 
     private void editItem(DetailsInteractor interactor, int index, String name) {
-        interactor.saveConsumable(index, new Consumable(name));
+        interactor.saveConsumable(index, new Consumable(name), new IDetailsInteractorSaveCbk() {
+            @Override
+            public void onFinishedSaving(boolean wasSuccess, boolean wasAdded) {
+                mCallbackFired = true;
+            }
+        });
+
+        waitForCallback();
+        mCallbackFired = false; // reset
     }
 
-
+    private void waitForCallback() {
+        while (mCallbackFired == false);
+    }
 }

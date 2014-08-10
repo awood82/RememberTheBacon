@@ -1,4 +1,4 @@
-package com.digitalwood.rememberthebacon.modules.details;
+package com.digitalwood.rememberthebacon.modules.details.handlers;
 
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
@@ -6,11 +6,11 @@ import com.digitalwood.rememberthebacon.common.model.Consumable;
  * Created by Andrew on 7/18/2014.
  * Copyright 2014
  */
-public interface IDetailsInteractorCbk {
+public interface IDetailsInteractorLoadCbk {
 
     /**
      *
      * @param consumable Will be null if index is invalid
      */
-    public void onFinishedLoading(Consumable consumable);
+    void onFinishedLoading(Consumable consumable);
 }

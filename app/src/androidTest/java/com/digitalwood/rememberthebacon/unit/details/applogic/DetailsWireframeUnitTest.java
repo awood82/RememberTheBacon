@@ -24,9 +24,8 @@ public class DetailsWireframeUnitTest extends ActivityUnitTestCase<TestFragmentA
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mIntent = new Intent();
-        //mIntent.setClassName("com.digitalwood.rememberthebacon.modules.details.ui", "com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity");
-        mIntent.setClassName("com.digitalwood.rememberthebacon.common.view", "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
+        mIntent = new Intent(this.getInstrumentation().getContext(), TestFragmentActivity.class);
+        //mIntent.setClassName("com.digitalwood.rememberthebacon.common.view", "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
         startActivity(mIntent, null, null);
     }
 
