@@ -1,12 +1,9 @@
 package com.digitalwood.rememberthebacon.functional.list;
 
-import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.UiThreadTest;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -14,16 +11,13 @@ import android.widget.ListView;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.common.view.TestFragmentActivity;
-import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
-import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 import com.digitalwood.rememberthebacon.R;
-import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListActivity;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListFragment;
-
-import junit.framework.Test;
 
 import java.util.ArrayList;
 
@@ -34,6 +28,7 @@ import java.util.ArrayList;
 public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
 
     private static final String TEST_LIST_STORE_FILENAME = "test.json";
+    private boolean mCallbackFired;
 
     public GroceryListFuncTest() {
         super(TestFragmentActivity.class);
@@ -156,7 +151,15 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
         ArrayList<Consumable> list = new ArrayList<Consumable>();
         Consumable c = new Consumable(name);
         c.setBought(bought);
-        ListStore.getInstance(getActivity()).add(c);
+        ListStore.getInstance(getActivity()).add(
+                c,
+                new IListStoreAddCbk() {
+                    @Override
+                    public void onAddFinished(boolean result) {
+                        mCallbackFired = true;
+                    }
+                });
+        waitForCallback();
         list.add(c);
         ListStoreJsonSerializer serializer = getListStoreJsonSerializer();
         serializer.saveList(list);
@@ -174,5 +177,10 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
         return new ListStoreJsonSerializer(
                 getActivity(),
                 TEST_LIST_STORE_FILENAME);
+    }
+
+    private void waitForCallback() {
+        while (mCallbackFired == false);
+        mCallbackFired = false; // reset
     }
 }

@@ -2,16 +2,15 @@ package com.digitalwood.rememberthebacon.unit.common;
 
 import android.test.AndroidTestCase;
 
+import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.IListStoreSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
-import org.mockito.Mock;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.mockito.Mock.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -20,13 +19,17 @@ import static org.mockito.Mockito.*;
  */
 public class ListStoreUnitTest extends AndroidTestCase{
 
+    private volatile boolean mCallbackFired;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         // Ensure that the singleton is reset
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
         store.deleteAll();
+
+        mCallbackFired = false;
     }
 
     @Override
@@ -34,12 +37,12 @@ public class ListStoreUnitTest extends AndroidTestCase{
         super.tearDown();
 
         // Ensure that the singleton is reset
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
         store.deleteAll();
     }
 
     public void testDeleteAll_AfterCalling_DoesNotInvalidateTheListStore() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
 
         store.deleteAll();
 
@@ -47,7 +50,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     public void testAdd_InitialSize_IsZero() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
 
         // Do nothing
 
@@ -55,16 +58,30 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     public void testAdd_AfterAddingOne_SizeIsOne() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
 
-        store.add(new Consumable());
+        TestAddCbk cbk = getTestAddCbk();
+        store.add(new Consumable(), cbk);
+        waitForCallback();
 
         assertEquals(1, store.size());
     }
 
+    public void testAdd_IfSucceds_CallbackReturnsTrue() {
+        IListStore store = getListStoreInstance();
+
+        TestAddCbk cbk = getTestAddCbk();
+        store.add(new Consumable(), cbk);
+        waitForCallback();
+
+        assertEquals(true, cbk.mResult);
+    }
+
     public void testDeleteAll_AfterCalling_SizeIsZero() {
-        ListStore store = getListStoreInstance();
-        store.add(new Consumable());
+        IListStore store = getListStoreInstance();
+        TestAddCbk cbk = getTestAddCbk();
+        store.add(new Consumable(), cbk);
+        waitForCallback();
 
         store.deleteAll();
 
@@ -72,42 +89,56 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     public void testSet_NegativeIndex_ReturnsFalse() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
 
-        boolean result = store.set(-1, new Consumable("Bacon"));
+        TestSetCbk setCbk = getTestSetCbk();
+        store.set(-1, new Consumable("Bacon"), setCbk);
+        waitForCallback();
 
-        assertEquals(false, result);
+        assertEquals(false, setCbk.mResult);
     }
 
     public void testSet_InvalidIndex_ReturnsFalse() {
-        ListStore store = getListStoreInstance();
-        store.add(new Consumable("Bacon"));
+        IListStore store = getListStoreInstance();
+        TestAddCbk addCbk = getTestAddCbk();
+        store.add(new Consumable("Bacon"), addCbk);
+        waitForCallback();
 
-        boolean result = store.set(123, new Consumable("Eggs"));
+        TestSetCbk setCbk = getTestSetCbk();
+        store.set(123, new Consumable("Eggs"), setCbk);
+        waitForCallback();
 
-        assertEquals(false, result);
+        assertEquals(false, setCbk.mResult);
     }
 
     public void testSet_ValidIndex_ReturnsTrue() {
-        ListStore store = getListStoreInstance();
-        store.add(new Consumable("Bacon"));
+        IListStore store = getListStoreInstance();
+        TestAddCbk addCbk = getTestAddCbk();
+        store.add(new Consumable("Bacon"), addCbk);
+        waitForCallback();
 
-        boolean result = store.set(0, new Consumable("Eggs"));
+        TestSetCbk setCbk = getTestSetCbk();
+        store.set(0, new Consumable("Eggs"), setCbk);
+        waitForCallback();
 
-        assertEquals(true, result);
+        assertEquals(true, setCbk.mResult);
     }
 
     public void testSet_ValidIndex_ChangesTheValue() {
-        ListStore store = getListStoreInstance();
-        store.add(new Consumable("Bacon"));
+        IListStore store = getListStoreInstance();
+        TestAddCbk addCbk = getTestAddCbk();
+        store.add(new Consumable("Bacon"), addCbk);
+        waitForCallback();
 
-        boolean result = store.set(0, new Consumable("Eggs"));
+        TestSetCbk setCbk = getTestSetCbk();
+        store.set(0, new Consumable("Eggs"), setCbk);
+        waitForCallback();
 
         assertEquals("Eggs", store.get(0).getName());
     }
 
     public void testSerialize_WhenSavingNoObjects_CallsSaveList() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
         IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
 
         store.serialize(mockSerializer);
@@ -116,8 +147,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     public void testSerialize_WhenSavingOneObject_CallsSaveList() {
-        ListStore store = getListStoreInstance();
-        store.add(new Consumable("Bacon"));
+        IListStore store = getListStoreInstance();
+        TestAddCbk cbk = getTestAddCbk();
+        store.add(new Consumable("Bacon"), cbk);
+        waitForCallback();
         IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
 
         store.serialize(mockSerializer);
@@ -126,7 +159,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
     }
 
     public void testDeserialize_WhenLoading_CallsLoadList() {
-        ListStore store = getListStoreInstance();
+        IListStore store = getListStoreInstance();
         IListStoreSerializer mockSerializer = mock(IListStoreSerializer.class);
 
         store.deserialize(mockSerializer);
@@ -136,7 +169,40 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
 
 
-    private ListStore getListStoreInstance() {
+    private IListStore getListStoreInstance() {
         return ListStore.getInstance(getContext());
+    }
+
+    private TestAddCbk getTestAddCbk() {
+        return new TestAddCbk();
+    }
+
+    private TestSetCbk getTestSetCbk() {
+        return new TestSetCbk();
+    }
+
+    private class TestAddCbk implements IListStoreAddCbk {
+        boolean mResult;
+
+        @Override
+        public void onAddFinished(boolean result) {
+            mResult = result;
+            mCallbackFired = true;
+        }
+    }
+
+    private class TestSetCbk implements IListStoreSetCbk {
+        boolean mResult;
+
+        @Override
+        public void onSetFinished(boolean result) {
+            mResult = result;
+            mCallbackFired = true;
+        }
+    }
+
+    private void waitForCallback() {
+        while (mCallbackFired == false);
+        mCallbackFired = false; // reset
     }
 }

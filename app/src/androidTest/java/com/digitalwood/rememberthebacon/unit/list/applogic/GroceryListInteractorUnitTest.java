@@ -3,6 +3,7 @@ package com.digitalwood.rememberthebacon.unit.list.applogic;
 import android.test.AndroidTestCase;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
@@ -17,6 +18,7 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
     private static final String TEST_LIST_STORE_FILENAME = "mytest.json";
     private static final String FIRST_ITEM_NAME = "Bacon";
+    private boolean mCallbackFired;
 
     // NOTE: Only needed while ListStore is a Singleton
     @Override
@@ -88,7 +90,15 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
     private GroceryListInteractor getNewInteractorWithOneItem() {
         GroceryListInteractor interactor = getNewInteractor();
         Consumable c = new Consumable(FIRST_ITEM_NAME);
-        ListStore.getInstance(getContext()).add(c);
+        ListStore.getInstance(getContext()).add(
+                c,
+                new IListStoreAddCbk() {
+                    @Override
+                    public void onAddFinished(boolean result) {
+                        mCallbackFired = true;
+                    }
+                });
+        waitForCallback();
 
         return interactor;
     }
@@ -112,5 +122,10 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
         public ArrayList<Consumable> getConsumables() {
             return mConsumables;
         }
+    }
+
+    private void waitForCallback() {
+        while (mCallbackFired == false);
+        mCallbackFired = false; // reset
     }
 }

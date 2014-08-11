@@ -2,8 +2,10 @@ package com.digitalwood.rememberthebacon.modules.list.applogic;
 
 import android.content.Context;
 
+import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 
@@ -64,10 +66,15 @@ public class GroceryListInteractor implements IGroceryListInteractor {
 
     @Override
     public void toggleConsumableBought(int position) {
-        ListStore ls = ListStore.getInstance(mContext);
+        IListStore ls = ListStore.getInstance(mContext);
         Consumable c = ls.get(position);
         c.setBought(!c.isBought()); // Toggle
-        ls.set(position, c);
+        ls.set(position, c, new IListStoreSetCbk() {
+            @Override
+            public void onSetFinished(boolean result) {
+                //TODO: No need to do anything?
+            }
+        });
     }
 
 }

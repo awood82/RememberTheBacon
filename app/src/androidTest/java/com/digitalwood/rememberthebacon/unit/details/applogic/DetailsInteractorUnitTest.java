@@ -15,7 +15,7 @@ import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
  */
 public class DetailsInteractorUnitTest extends AndroidTestCase {
 
-    boolean mCallbackFired;
+    private volatile boolean mCallbackFired;
 
     @Override
     protected void setUp() throws Exception {
@@ -33,13 +33,13 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("");
 
-        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        TestSaveCbk saveCbk = getNewTestSaveCbk();
         interactor.saveConsumable(
                 DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET,
                 c,
                 saveCbk);
-
         waitForCallback();
+
         assertEquals(false, saveCbk.mWasSuccess);
     }
 
@@ -47,10 +47,10 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("Bacon");
 
-        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        TestSaveCbk saveCbk = getNewTestSaveCbk();
         interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c, saveCbk);
-
         waitForCallback();
+
         assertEquals(true, saveCbk.mWasSuccess);
         assertEquals(true, saveCbk.mWasAdded);
     }
@@ -60,10 +60,10 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         addItem(interactor, "Vegetables");
         Consumable c = new Consumable("Bacon");
 
-        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        TestSaveCbk saveCbk = getNewTestSaveCbk();
         interactor.saveConsumable(0, c, saveCbk);
-
         waitForCallback();
+
         assertEquals(true, saveCbk.mWasSuccess);
         assertEquals(false, saveCbk.mWasAdded);
     }
@@ -72,10 +72,10 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         DetailsInteractor interactor = getNewInteractor();
         Consumable c = new Consumable("");
 
-        InteractorSaveCbk saveCbk = getNewInteractorSaveCbk();
+        TestSaveCbk saveCbk = getNewTestSaveCbk();
         interactor.saveConsumable(0, c, saveCbk);
-
         waitForCallback();
+
         assertEquals(false, saveCbk.mWasSuccess);
     }
 
@@ -85,7 +85,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
         editItem(interactor, 0, "Bacon");
 
-        InteractorLoadCbk cbk = getNewInteractorLoadCbk();
+        TestLoadCbk cbk = getNewTestLoadCbk();
         interactor.loadConsumable(0, cbk);
         waitForCallback();
         assertEquals("Bacon", cbk.mConsumable.getName());
@@ -99,12 +99,15 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
         editItem(interactor, 1, "Eggs");
 
-        InteractorLoadCbk cbk = getNewInteractorLoadCbk();
+        TestLoadCbk cbk = getNewTestLoadCbk();
         interactor.loadConsumable(0, cbk);
+        waitForCallback();
         assertEquals("Bacon", cbk.mConsumable.getName());
         interactor.loadConsumable(1, cbk);
+        waitForCallback();
         assertEquals("Eggs", cbk.mConsumable.getName());
         interactor.loadConsumable(2, cbk);
+        waitForCallback();
         assertEquals("Bacon 3", cbk.mConsumable.getName());
     }
 
@@ -114,15 +117,15 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         return new DetailsInteractor(getContext());
     }
 
-    private InteractorLoadCbk getNewInteractorLoadCbk() {
-        return new InteractorLoadCbk();
+    private TestLoadCbk getNewTestLoadCbk() {
+        return new TestLoadCbk();
     }
 
-    private InteractorSaveCbk getNewInteractorSaveCbk() {
-        return new InteractorSaveCbk();
+    private TestSaveCbk getNewTestSaveCbk() {
+        return new TestSaveCbk();
     }
 
-    private class InteractorLoadCbk implements IDetailsInteractorLoadCbk {
+    private class TestLoadCbk implements IDetailsInteractorLoadCbk {
         private Consumable mConsumable;
 
         @Override
@@ -132,7 +135,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         }
     }
 
-    private class InteractorSaveCbk implements IDetailsInteractorSaveCbk {
+    private class TestSaveCbk implements IDetailsInteractorSaveCbk {
         boolean mWasSuccess;
         boolean mWasAdded;
 
@@ -156,7 +159,6 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
                 });
 
         waitForCallback();
-        mCallbackFired = false; // reset
     }
 
     private void editItem(DetailsInteractor interactor, int index, String name) {
@@ -168,10 +170,10 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         });
 
         waitForCallback();
-        mCallbackFired = false; // reset
     }
 
     private void waitForCallback() {
         while (mCallbackFired == false);
+        mCallbackFired = false; // reset
     }
 }

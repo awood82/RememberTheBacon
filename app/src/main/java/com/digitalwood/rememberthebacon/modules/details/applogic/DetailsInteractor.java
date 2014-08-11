@@ -3,6 +3,8 @@ package com.digitalwood.rememberthebacon.modules.details.applogic;
 import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorLoadCbk;
 import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorSaveCbk;
@@ -21,13 +23,23 @@ public class DetailsInteractor implements IDetailsInteractor {
     }
 
     @Override
-    public void saveConsumable(int index, Consumable c, IDetailsInteractorSaveCbk cbk) {
+    public void saveConsumable(int index, Consumable c, final IDetailsInteractorSaveCbk cbk) {
         if (c.getName().isEmpty()) {
             cbk.onFinishedSaving(false, false);
         } else if (index == DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET) {
-            cbk.onFinishedSaving(ListStore.getInstance(mContext).add(c), true);
+            ListStore.getInstance(mContext).add(c, new IListStoreAddCbk() {
+                @Override
+                public void onAddFinished(boolean result) {
+                    cbk.onFinishedSaving(result, true);
+                }
+            });
         } else {
-            cbk.onFinishedSaving(ListStore.getInstance(mContext).set(index, c), false);
+            ListStore.getInstance(mContext).set(index, c, new IListStoreSetCbk() {
+                @Override
+                public void onSetFinished(boolean result) {
+                    cbk.onFinishedSaving(result, false);
+                }
+            });
         }
     }
 
