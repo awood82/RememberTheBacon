@@ -5,6 +5,7 @@ import android.content.Context;
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
@@ -57,22 +58,18 @@ public class GroceryListInteractor implements IGroceryListInteractor {
     }
 
     @Override
-    public Consumable getConsumableAt(int position) { //throws ArrayIndexOutOfBoundsException {
-        /*if (position < 0 || position >= mConsumables.size()) {
-            return null;
-        }*/
-        return ListStore.getInstance(mContext).get(position);
-    }
-
-    @Override
-    public void toggleConsumableBought(int position) {
-        IListStore ls = ListStore.getInstance(mContext);
-        Consumable c = ls.get(position);
-        c.setBought(!c.isBought()); // Toggle
-        ls.set(position, c, new IListStoreSetCbk() {
+    public void toggleConsumableBought(final int position) {
+        final IListStore ls = ListStore.getInstance(mContext);
+        ls.get(position, new IListStoreGetCbk() {
             @Override
-            public void onSetFinished(boolean result) {
-                //TODO: No need to do anything?
+            public void onGetFinished(Consumable consumable) {
+                consumable.setBought(!consumable.isBought()); // Toggle
+                ls.set(position, consumable, new IListStoreSetCbk() {
+                    @Override
+                    public void onSetFinished(boolean result) {
+                        //TODO: No need to do anything?
+                    }
+                });
             }
         });
     }

@@ -13,8 +13,6 @@ public interface IGroceryListInteractor {
 
     public void saveConsumables(IGroceryListInteractorCbk callback);
 
-    Consumable getConsumableAt(int position);
-
     void toggleConsumableBought(int position);
 
 }

@@ -58,7 +58,6 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
 
         presenter.okButtonPressed();
 
-        //verify(mockInteractor).saveConsumable(anyInt(), eq( eggs ));
         ArgumentCaptor<Consumable> captor = ArgumentCaptor.forClass(Consumable.class);
         verify(mockInteractor).saveConsumable(anyInt(), captor.capture(), any(IDetailsInteractorSaveCbk.class));
         assertEquals("Eggs", captor.getValue().getName());

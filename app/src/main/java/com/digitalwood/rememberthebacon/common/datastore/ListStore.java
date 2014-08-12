@@ -3,6 +3,7 @@ package com.digitalwood.rememberthebacon.common.datastore;
 import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
@@ -50,8 +51,8 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public Consumable get(int index) {
-        return mConsumables.get(index);
+    public void get(int index, IListStoreGetCbk cbk) {
+        cbk.onGetFinished(mConsumables.get(index));
     }
 
     @Override

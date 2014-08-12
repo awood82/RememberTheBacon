@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorLoadCbk;
@@ -44,11 +45,16 @@ public class DetailsInteractor implements IDetailsInteractor {
     }
 
     @Override
-    public void loadConsumable(int index, IDetailsInteractorLoadCbk cbk) {
+    public void loadConsumable(int index, final IDetailsInteractorLoadCbk cbk) {
         if (index == DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET) {
             cbk.onFinishedLoading(null);
         } else {
-            cbk.onFinishedLoading(ListStore.getInstance(mContext).get(index));
+            ListStore.getInstance(mContext).get(index, new IListStoreGetCbk() {
+                @Override
+                public void onGetFinished(Consumable consumable) {
+                    cbk.onFinishedLoading(consumable);
+                }
+            });
         }
     }
 }

@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.IListStoreSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
@@ -134,7 +135,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
         store.set(0, new Consumable("Eggs"), setCbk);
         waitForCallback();
 
-        assertEquals("Eggs", store.get(0).getName());
+        TestGetCbk getCbk = getTestGetCbk();
+        store.get(0, getCbk);
+        waitForCallback();
+        assertEquals("Eggs", getCbk.mConsumable.getName());
     }
 
     public void testSerialize_WhenSavingNoObjects_CallsSaveList() {
@@ -181,6 +185,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
         return new TestSetCbk();
     }
 
+    private TestGetCbk getTestGetCbk() {
+        return new TestGetCbk();
+    }
+
     private class TestAddCbk implements IListStoreAddCbk {
         boolean mResult;
 
@@ -197,6 +205,16 @@ public class ListStoreUnitTest extends AndroidTestCase{
         @Override
         public void onSetFinished(boolean result) {
             mResult = result;
+            mCallbackFired = true;
+        }
+    }
+
+    private class TestGetCbk implements IListStoreGetCbk {
+        Consumable mConsumable;
+
+        @Override
+        public void onGetFinished(Consumable consumable) {
+            mConsumable = consumable;
             mCallbackFired = true;
         }
     }
