@@ -26,6 +26,15 @@ public class Consumable {
         mName = name;
     }
 
+    public Consumable(Consumable toCopy) {
+        this();
+        if (toCopy != null) {
+            mId = toCopy.getId();
+            mName = toCopy.getName();
+            mBought = toCopy.isBought();
+        }
+    }
+
     public String toString() { return mName; }
 
     public boolean equals(Consumable o) { return mName.equals(o.getName()); }

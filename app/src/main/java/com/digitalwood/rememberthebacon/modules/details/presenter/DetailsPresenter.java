@@ -18,6 +18,7 @@ public class DetailsPresenter
     private IDetailsWireframe mWireframe;
     private IDetailsInteractor mInteractor;
     private int mIndex;
+    private Consumable mConsumableToEdit;
 
     public DetailsPresenter(IDetailsView view, IDetailsWireframe wireframe, IDetailsInteractor interactor) {
         mView = view;
@@ -39,7 +40,9 @@ public class DetailsPresenter
 
     @Override
     public void okButtonPressed() {
-        mInteractor.saveConsumable(mIndex, new Consumable(mView.getItemName()), this);
+        Consumable updatedConsumable = new Consumable(mConsumableToEdit);
+        updatedConsumable.setName(mView.getItemName());
+        mInteractor.saveConsumable(mIndex, updatedConsumable, this);
     }
 
     @Override
@@ -50,8 +53,10 @@ public class DetailsPresenter
     @Override
     public void onFinishedLoading(Consumable consumable) {
         if (consumable == null) {
+            mConsumableToEdit = new Consumable();
             mView.setTitle("Add New");
         } else {
+            mConsumableToEdit = consumable;
             mView.setItemName(consumable.getName());
             mView.setTitle("Edit Details");
         }
