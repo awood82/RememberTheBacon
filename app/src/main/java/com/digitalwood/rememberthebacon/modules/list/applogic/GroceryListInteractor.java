@@ -6,6 +6,7 @@ import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
@@ -35,19 +36,23 @@ public class GroceryListInteractor implements IGroceryListInteractor {
     }
 
     @Override
-    public void loadConsumables(IGroceryListInteractorCbk callback) {
-        ArrayList<Consumable> mConsumables = new ArrayList<Consumable>();
+    public void loadConsumables(final IGroceryListInteractorCbk callback) {
+        final ArrayList<Consumable> mConsumables = new ArrayList<Consumable>();
 
-        ListIterator<Consumable> iter = ListStore.getInstance(mContext).listIterator();
-        Consumable c;
-        while (iter.hasNext()) {
-            c = iter.next();
-            mConsumables.add(c);
-        }
+        ListStore.getInstance(mContext).listIterator(new IListStoreIterCbk() {
+            @Override
+            public void onListIteratorFinished(ListIterator<Consumable> consumableIter) {
+                Consumable c;
+                while (consumableIter.hasNext()) {
+                    c = consumableIter.next();
+                    mConsumables.add(c);
+                }
 
-        if (callback != null) {
-            callback.onFinishedLoading(mConsumables);
-        }
+                if (callback != null) {
+                    callback.onFinishedLoading(mConsumables);
+                }
+            }
+        });
     }
 
     @Override

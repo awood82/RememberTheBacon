@@ -2,6 +2,7 @@ package com.digitalwood.rememberthebacon.common.datastore;
 
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
@@ -20,7 +21,7 @@ public interface IListStore {
 
     void deleteAll();
 
-    ListIterator<Consumable> listIterator();
+    void listIterator(IListStoreIterCbk cbk);
 
     int size();
 

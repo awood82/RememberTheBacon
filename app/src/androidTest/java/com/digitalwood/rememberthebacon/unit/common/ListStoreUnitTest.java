@@ -5,12 +5,16 @@ import android.test.AndroidTestCase;
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.IListStoreSerializer;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
+import junit.framework.Test;
+
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import static org.mockito.Mockito.*;
 
@@ -47,7 +51,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
         store.deleteAll();
 
-        assertNotNull(store.listIterator());
+        TestListIterCbk listIterCbk = getTestListIterCbk();
+        store.listIterator(listIterCbk);
+        waitForCallback();
+        assertNotNull(listIterCbk.mConsumableIter);
     }
 
     public void testAdd_InitialSize_IsZero() {
@@ -189,6 +196,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
         return new TestGetCbk();
     }
 
+    private TestListIterCbk getTestListIterCbk() {
+        return new TestListIterCbk();
+    }
+
     private class TestAddCbk implements IListStoreAddCbk {
         boolean mResult;
 
@@ -215,6 +226,16 @@ public class ListStoreUnitTest extends AndroidTestCase{
         @Override
         public void onGetFinished(Consumable consumable) {
             mConsumable = consumable;
+            mCallbackFired = true;
+        }
+    }
+
+    private class TestListIterCbk implements IListStoreIterCbk {
+        ListIterator<Consumable> mConsumableIter;
+
+        @Override
+        public void onListIteratorFinished(ListIterator<Consumable> consumableIter) {
+            mConsumableIter = consumableIter;
             mCallbackFired = true;
         }
     }

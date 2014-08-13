@@ -4,11 +4,11 @@ import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
 
 /**
  * Created by Andrew on 7/14/2014.
@@ -61,8 +61,8 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public ListIterator<Consumable> listIterator() {
-        return mConsumables.listIterator();
+    public void listIterator(IListStoreIterCbk cbk) {
+        cbk.onListIteratorFinished(mConsumables.listIterator());
     }
 
     @Override
