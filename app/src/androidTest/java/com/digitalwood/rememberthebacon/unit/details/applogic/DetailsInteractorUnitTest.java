@@ -2,7 +2,9 @@ package com.digitalwood.rememberthebacon.unit.details.applogic;
 
 import android.test.AndroidTestCase;
 
+import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorLoadCbk;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
@@ -26,7 +28,13 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        ListStore.getInstance(getContext()).deleteAll();
+        ListStore.getInstance(getContext()).deleteAll(new IListStoreDeleteAllCbk() {
+            @Override
+            public void onDeleteAllFinished() {
+                mCallbackFired= true;
+            }
+        });
+        waitForCallback();
     }
 
     public void testSaveConsumable_AddNewWithEmptyName_Fails() {
@@ -114,7 +122,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
 
     private DetailsInteractor getNewInteractor() {
-        return new DetailsInteractor(getContext());
+        return new DetailsInteractor(ListStore.getInstance(getContext()));
     }
 
     private TestLoadCbk getNewTestLoadCbk() {

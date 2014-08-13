@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
@@ -64,7 +65,13 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragme
     }
 
     private void cleanupListStore() {
-        ListStore.getInstance(getActivity()).deleteAll();
+        ListStore.getInstance(getActivity()).deleteAll(new IListStoreDeleteAllCbk() {
+            @Override
+            public void onDeleteAllFinished() {
+                mCallbackFired = true;
+            }
+        });
+        waitForCallback();
     }
 
     private TestFragmentActivity setUpActivity() {

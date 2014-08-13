@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.IListStoreSerializer;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
@@ -30,8 +31,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         super.setUp();
 
         // Ensure that the singleton is reset
-        IListStore store = getListStoreInstance();
-        store.deleteAll();
+        deleteConsumables();
 
         mCallbackFired = false;
     }
@@ -41,14 +41,13 @@ public class ListStoreUnitTest extends AndroidTestCase{
         super.tearDown();
 
         // Ensure that the singleton is reset
-        IListStore store = getListStoreInstance();
-        store.deleteAll();
+        deleteConsumables();
     }
 
     public void testDeleteAll_AfterCalling_DoesNotInvalidateTheListStore() {
         IListStore store = getListStoreInstance();
 
-        store.deleteAll();
+        deleteConsumables();
 
         TestListIterCbk listIterCbk = getTestListIterCbk();
         store.listIterator(listIterCbk);
@@ -96,7 +95,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         store.add(new Consumable(), cbk);
         waitForCallback();
 
-        store.deleteAll();
+        deleteConsumables();
 
         TestSizeCbk sizeCbk = getTestSizeCbk();
         store.size(sizeCbk);
@@ -260,6 +259,17 @@ public class ListStoreUnitTest extends AndroidTestCase{
             mSize = size;
             mCallbackFired = true;
         }
+    }
+
+    private void deleteConsumables() {
+        IListStore store = getListStoreInstance();
+        store.deleteAll(new IListStoreDeleteAllCbk() {
+            @Override
+            public void onDeleteAllFinished() {
+                mCallbackFired = true;
+            }
+        });
+        waitForCallback();
     }
 
     private void waitForCallback() {

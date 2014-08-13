@@ -3,6 +3,7 @@ package com.digitalwood.rememberthebacon.common.datastore;
 import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
@@ -57,8 +58,9 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll(IListStoreDeleteAllCbk cbk) {
         mConsumables.clear();
+        cbk.onDeleteAllFinished();
     }
 
     @Override

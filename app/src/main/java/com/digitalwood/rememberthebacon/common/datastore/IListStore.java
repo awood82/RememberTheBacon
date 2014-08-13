@@ -1,6 +1,7 @@
 package com.digitalwood.rememberthebacon.common.datastore;
 
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
@@ -20,7 +21,7 @@ public interface IListStore {
 
     void get(int index, IListStoreGetCbk cbk);
 
-    void deleteAll();
+    void deleteAll(IListStoreDeleteAllCbk cbk);
 
     void listIterator(IListStoreIterCbk cbk);
 

@@ -2,7 +2,6 @@ package com.digitalwood.rememberthebacon.functional.list;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
@@ -14,6 +13,7 @@ import android.widget.ListView;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.common.view.TestFragmentActivity;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
@@ -204,7 +204,13 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
     }
 
     private void deleteConsumables() {
-        ListStore.getInstance(getActivity()).deleteAll();
+        ListStore.getInstance(getActivity()).deleteAll(new IListStoreDeleteAllCbk() {
+            @Override
+            public void onDeleteAllFinished() {
+                mCallbackFired = true;
+            }
+        });
+        waitForCallback();
 
         ArrayList<Consumable> list = new ArrayList<Consumable>();
         ListStoreJsonSerializer serializer = getListStoreJsonSerializer();

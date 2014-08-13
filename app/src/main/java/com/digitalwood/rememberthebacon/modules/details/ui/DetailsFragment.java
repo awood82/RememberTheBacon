@@ -7,14 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.digitalwood.rememberthebacon.R;
-import com.digitalwood.rememberthebacon.common.view.MasterActivity;
+import com.digitalwood.rememberthebacon.common.datastore.IListStore;
+import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWireframe;
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
@@ -48,10 +47,11 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        IListStore listStore = ListStore.getInstance(this.getActivity().getApplicationContext());
         mPresenter = new DetailsPresenter(
                 this,
                 new DetailsWireframe(getActivity()),
-                new DetailsInteractor(getActivity().getApplicationContext()));
+                new DetailsInteractor(listStore));
 
         mConsumableIndex = getArguments().getInt(
                 EXTRA_CONSUMABLE_INDEX,

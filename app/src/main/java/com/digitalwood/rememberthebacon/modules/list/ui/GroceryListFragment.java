@@ -15,8 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalwood.rememberthebacon.R;
+import com.digitalwood.rememberthebacon.common.datastore.IListStore;
+import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
-import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
 import com.digitalwood.rememberthebacon.modules.list.presenter.GroceryListPresenter;
 import com.digitalwood.rememberthebacon.modules.list.presenter.IGroceryListPresenter;
@@ -47,6 +48,8 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        IListStore listStore = ListStore.getInstance(this.getActivity().getApplicationContext());
+
         String listStoreFilename = getArguments().getString(
                 EXTRA_LIST_STORE_FILENAME);
         if (listStoreFilename == null || listStoreFilename.isEmpty()) {
@@ -56,7 +59,7 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
         mPresenter = new GroceryListPresenter(
                 this,
                 new GroceryListWireframe(getActivity()),
-                new GroceryListInteractor(getActivity().getApplicationContext(), listStoreFilename));
+                new GroceryListInteractor(getActivity().getApplicationContext(), listStore, listStoreFilename));
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.list.IGroceryListInteractorCbk;
 import com.digitalwood.rememberthebacon.modules.list.applogic.GroceryListInteractor;
@@ -24,7 +25,13 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        ListStore.getInstance(getContext()).deleteAll();
+        ListStore.getInstance(getContext()).deleteAll(new IListStoreDeleteAllCbk() {
+            @Override
+            public void onDeleteAllFinished() {
+                mCallbackFired = true;
+            }
+        });
+        waitForCallback();
     }
 
     public void testLoadConsumables_WhenNoneSaved_ReturnsEmptyList() {
@@ -85,7 +92,10 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
 
     private GroceryListInteractor getNewInteractor() {
-        return new GroceryListInteractor(getContext(), TEST_LIST_STORE_FILENAME);
+        return new GroceryListInteractor(
+                getContext(),
+                ListStore.getInstance(getContext()),
+                TEST_LIST_STORE_FILENAME);
     }
 
     private GroceryListInteractor getNewInteractorWithOneItem() {

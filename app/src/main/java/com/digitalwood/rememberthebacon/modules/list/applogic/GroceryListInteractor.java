@@ -21,25 +21,26 @@ import java.util.ListIterator;
 public class GroceryListInteractor implements IGroceryListInteractor {
     public static final String DEFAULT_LIST_STORE_FILENAME = "list.json";
     Context mContext;
-    private String mListStoreFilename;
+    private IListStore mListStore;
+    private String mListFilename;
 
-    public GroceryListInteractor(Context appContext, String listStoreFilename) {
+    public GroceryListInteractor(Context appContext, IListStore listStore, String listFilename) {
         mContext = appContext;
         // Load the list from disk the first time
-        mListStoreFilename = listStoreFilename;
-        ListStore.getInstance(mContext)
-                .deserialize(new ListStoreJsonSerializer(mContext, mListStoreFilename));
+        mListFilename = listFilename;
+        mListStore = listStore;
+        mListStore.deserialize(new ListStoreJsonSerializer(mContext, mListFilename));
     }
 
-    public GroceryListInteractor(Context appContext) {
-        this(appContext, DEFAULT_LIST_STORE_FILENAME);
+    public GroceryListInteractor(Context appContext, IListStore listStore) {
+        this(appContext, listStore, DEFAULT_LIST_STORE_FILENAME);
     }
 
     @Override
     public void loadConsumables(final IGroceryListInteractorCbk callback) {
         final ArrayList<Consumable> mConsumables = new ArrayList<Consumable>();
 
-        ListStore.getInstance(mContext).listIterator(new IListStoreIterCbk() {
+        mListStore.listIterator(new IListStoreIterCbk() {
             @Override
             public void onListIteratorFinished(ListIterator<Consumable> consumableIter) {
                 Consumable c;
@@ -57,19 +58,18 @@ public class GroceryListInteractor implements IGroceryListInteractor {
 
     @Override
     public void saveConsumables(IGroceryListInteractorCbk callback) {
-        ListStore.getInstance(mContext).serialize(
-                new ListStoreJsonSerializer(mContext, mListStoreFilename));
+        mListStore.serialize(
+                new ListStoreJsonSerializer(mContext, mListFilename));
         callback.onFinishedSaving();
     }
 
     @Override
     public void toggleConsumableBought(final int position) {
-        final IListStore ls = ListStore.getInstance(mContext);
-        ls.get(position, new IListStoreGetCbk() {
+        mListStore.get(position, new IListStoreGetCbk() {
             @Override
             public void onGetFinished(Consumable consumable) {
                 consumable.setBought(!consumable.isBought()); // Toggle
-                ls.set(position, consumable, new IListStoreSetCbk() {
+                mListStore.set(position, consumable, new IListStoreSetCbk() {
                     @Override
                     public void onSetFinished(boolean result) {
                         //TODO: No need to do anything?
@@ -78,5 +78,4 @@ public class GroceryListInteractor implements IGroceryListInteractor {
             }
         });
     }
-
 }
