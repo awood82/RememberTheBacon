@@ -4,6 +4,7 @@ import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAdd
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSizeCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
 import java.util.ListIterator;
@@ -23,7 +24,7 @@ public interface IListStore {
 
     void listIterator(IListStoreIterCbk cbk);
 
-    int size();
+    void size(IListStoreSizeCbk cbk);
 
     void serialize(IListStoreSerializer serializer);
 

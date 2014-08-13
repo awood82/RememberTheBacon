@@ -9,9 +9,8 @@ import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIte
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSizeCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
-
-import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -62,7 +61,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
         // Do nothing
 
-        assertEquals(0, store.size());
+        TestSizeCbk sizeCbk = getTestSizeCbk();
+        store.size(sizeCbk);
+        waitForCallback();
+        assertEquals(0, sizeCbk.mSize);
     }
 
     public void testAdd_AfterAddingOne_SizeIsOne() {
@@ -72,7 +74,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
         store.add(new Consumable(), cbk);
         waitForCallback();
 
-        assertEquals(1, store.size());
+        TestSizeCbk sizeCbk = getTestSizeCbk();
+        store.size(sizeCbk);
+        waitForCallback();
+        assertEquals(1, sizeCbk.mSize);
     }
 
     public void testAdd_IfSucceds_CallbackReturnsTrue() {
@@ -93,7 +98,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
         store.deleteAll();
 
-        assertEquals(0, store.size());
+        TestSizeCbk sizeCbk = getTestSizeCbk();
+        store.size(sizeCbk);
+        waitForCallback();
+        assertEquals(0, sizeCbk.mSize);
     }
 
     public void testSet_NegativeIndex_ReturnsFalse() {
@@ -196,6 +204,10 @@ public class ListStoreUnitTest extends AndroidTestCase{
         return new TestGetCbk();
     }
 
+    private TestSizeCbk getTestSizeCbk() {
+        return new TestSizeCbk();
+    }
+
     private TestListIterCbk getTestListIterCbk() {
         return new TestListIterCbk();
     }
@@ -236,6 +248,16 @@ public class ListStoreUnitTest extends AndroidTestCase{
         @Override
         public void onListIteratorFinished(ListIterator<Consumable> consumableIter) {
             mConsumableIter = consumableIter;
+            mCallbackFired = true;
+        }
+    }
+
+    private class TestSizeCbk implements IListStoreSizeCbk {
+        int mSize;
+
+        @Override
+        public void onSizeFinished(int size) {
+            mSize = size;
             mCallbackFired = true;
         }
     }

@@ -6,6 +6,7 @@ import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAdd
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSizeCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
 
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public int size() {
-        return mConsumables.size();
+    public void size(IListStoreSizeCbk cbk) {
+        cbk.onSizeFinished(mConsumables.size());
     }
 
     @Override
