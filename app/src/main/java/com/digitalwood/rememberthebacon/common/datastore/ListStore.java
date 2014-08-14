@@ -37,13 +37,13 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public void add(Consumable consumable, IListStoreAddCbk cbk) {
+    public void add(Consumable consumable, final IListStoreAddCbk cbk) {
         boolean result = mConsumables.add(consumable);
         cbk.onAddFinished(result);
     }
 
     @Override
-    public void set(int index, Consumable consumable, IListStoreSetCbk cbk) {
+    public void set(int index, Consumable consumable, final IListStoreSetCbk cbk) {
         if (index < 0 || index >= mConsumables.size()) {
             cbk.onSetFinished(false);
         } else {
@@ -53,33 +53,33 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public void get(int index, IListStoreGetCbk cbk) {
+    public void get(int index, final IListStoreGetCbk cbk) {
         cbk.onGetFinished(mConsumables.get(index));
     }
 
     @Override
-    public void deleteAll(IListStoreDeleteAllCbk cbk) {
+    public void deleteAll(final IListStoreDeleteAllCbk cbk) {
         mConsumables.clear();
         cbk.onDeleteAllFinished();
     }
 
     @Override
-    public void listIterator(IListStoreIterCbk cbk) {
+    public void listIterator(final IListStoreIterCbk cbk) {
         cbk.onListIteratorFinished(mConsumables.listIterator());
     }
 
     @Override
-    public void size(IListStoreSizeCbk cbk) {
+    public void size(final IListStoreSizeCbk cbk) {
         cbk.onSizeFinished(mConsumables.size());
     }
 
     @Override
-    public void serialize(IListStoreSerializer serializer) {
+    public void serialize(final IListStoreSerializer serializer) {
         serializer.saveList(mConsumables);
     }
 
     @Override
-    public void deserialize(IListStoreSerializer serializer) {
+    public void deserialize(final IListStoreSerializer serializer) {
         mConsumables = serializer.loadList();
     }
 }

@@ -30,7 +30,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
 
     private static final String TEST_LIST_STORE_FILENAME = "test.json";
     private static final long MONITOR_TIMEOUT_MS = 3000;
-    private boolean mCallbackFired;
+    private volatile boolean mCallbackFired;
 
     public GroceryListFuncTest() {
         super(TestFragmentActivity.class);

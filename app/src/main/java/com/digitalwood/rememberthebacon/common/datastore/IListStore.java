@@ -15,19 +15,19 @@ import java.util.ListIterator;
  * Copyright 2014
  */
 public interface IListStore {
-    void add(Consumable consumable, IListStoreAddCbk cbk);
+    void add(Consumable consumable, final IListStoreAddCbk cbk);
 
-    void set(int index, Consumable consumable, IListStoreSetCbk cbk);
+    void set(int index, Consumable consumable, final IListStoreSetCbk cbk);
 
-    void get(int index, IListStoreGetCbk cbk);
+    void get(int index, final IListStoreGetCbk cbk);
 
-    void deleteAll(IListStoreDeleteAllCbk cbk);
+    void deleteAll(final IListStoreDeleteAllCbk cbk);
 
-    void listIterator(IListStoreIterCbk cbk);
+    void listIterator(final IListStoreIterCbk cbk);
 
-    void size(IListStoreSizeCbk cbk);
+    void size(final IListStoreSizeCbk cbk);
 
-    void serialize(IListStoreSerializer serializer);
+    void serialize(final IListStoreSerializer serializer);
 
-    void deserialize(IListStoreSerializer serializer);
+    void deserialize(final IListStoreSerializer serializer);
 }

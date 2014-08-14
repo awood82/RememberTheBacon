@@ -18,7 +18,7 @@ import com.digitalwood.rememberthebacon.common.view.TestFragmentActivity;
  */
 public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
 
-    private boolean mCallbackFired;
+    private volatile boolean mCallbackFired;
 
     public DetailsFuncTest() {
         super(TestFragmentActivity.class);
