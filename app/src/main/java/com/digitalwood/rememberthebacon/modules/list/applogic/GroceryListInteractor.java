@@ -3,9 +3,7 @@ package com.digitalwood.rememberthebacon.modules.list.applogic;
 import android.content.Context;
 
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
-import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStoreJsonSerializer;
-import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreIterCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
@@ -38,7 +36,7 @@ public class GroceryListInteractor implements IGroceryListInteractor {
 
     @Override
     public void loadConsumables(final IGroceryListInteractorCbk callback) {
-        final ArrayList<Consumable> mConsumables = new ArrayList<Consumable>();
+        final ArrayList<Consumable> consumableList = new ArrayList<Consumable>();
 
         mListStore.listIterator(new IListStoreIterCbk() {
             @Override
@@ -46,35 +44,30 @@ public class GroceryListInteractor implements IGroceryListInteractor {
                 Consumable c;
                 while (consumableIter.hasNext()) {
                     c = consumableIter.next();
-                    mConsumables.add(c);
+                    consumableList.add(c);
                 }
 
                 if (callback != null) {
-                    callback.onFinishedLoading(mConsumables);
+                    callback.onFinishedLoading(consumableList);
                 }
             }
         });
     }
 
     @Override
-    public void saveConsumables(IGroceryListInteractorCbk callback) {
+    public void saveConsumables(final IGroceryListInteractorCbk callback) {
         mListStore.serialize(
                 new ListStoreJsonSerializer(mContext, mListFilename));
         callback.onFinishedSaving();
     }
 
     @Override
-    public void toggleConsumableBought(final int position) {
-        mListStore.get(position, new IListStoreGetCbk() {
+    public void toggleConsumableBought(final Consumable consumable, final IGroceryListInteractorCbk callback) {
+        consumable.setBought(!consumable.isBought()); // Toggle
+        mListStore.set(consumable.getId(), consumable, new IListStoreSetCbk() {
             @Override
-            public void onGetFinished(Consumable consumable) {
-                consumable.setBought(!consumable.isBought()); // Toggle
-                mListStore.set(position, consumable, new IListStoreSetCbk() {
-                    @Override
-                    public void onSetFinished(boolean result) {
-                        //TODO: No need to do anything?
-                    }
-                });
+            public void onSetFinished(boolean result) {
+                callback.onFinishedTogglingBought(consumable);
             }
         });
     }

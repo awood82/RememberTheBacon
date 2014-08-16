@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,12 +95,12 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        mPresenter.onItemClicked(position);
+        mPresenter.onItemClicked((Consumable)getListAdapter().getItem(position));
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-        mPresenter.onItemLongClicked(position);
+        mPresenter.onItemLongClicked((Consumable)getListAdapter().getItem(position));
         return true;
     }
 
@@ -115,13 +116,29 @@ public class GroceryListFragment extends ListFragment implements IGroceryListVie
         setListAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-
+/*
     @Override
     public void toggleItemBought(int index) {
         getListView()
                 .getChildAt(index)
                 .findViewById(R.id.bought_checkBox)
                 .performClick();
+    }
+*/
+
+    @Override
+    public void toggleItemBought(Consumable consumable) {
+        ListAdapter la = getListAdapter();
+        for (int i = 0; i < la.getCount(); i++) {
+            Consumable inList = (Consumable)la.getItem(i);
+            if (consumable.getId().equals(inList.getId())) {
+                getListView()
+                        .getChildAt(i)
+                        .findViewById(R.id.bought_checkBox)
+                        .performClick();
+                break;
+            }
+        }
     }
 
     @Override

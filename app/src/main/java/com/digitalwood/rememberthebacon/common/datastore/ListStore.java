@@ -43,24 +43,43 @@ public class ListStore implements IListStore {
     }
 
     @Override
-    public void set(int index, Consumable consumable, final IListStoreSetCbk cbk) {
-        if (index < 0 || index >= mConsumables.size()) {
-            cbk.onSetFinished(false);
-        } else {
-            Consumable result = mConsumables.set(index, consumable);
+    public void set(String id, Consumable newConsumable, final IListStoreSetCbk cbk) {
+        boolean found = false;
+        int foundIndex;
+        // Find index of old consumable,...
+        for (foundIndex = 0; foundIndex < mConsumables.size(); foundIndex++) {
+            if (mConsumables.get(foundIndex).getId().equals(id)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            // and replace it with the new consumable
+            newConsumable.setId(id);
+            Consumable result = mConsumables.set(foundIndex, newConsumable);
             cbk.onSetFinished(result != null);
+        } else {
+            cbk.onSetFinished(false);
         }
     }
 
     @Override
-    public void get(int index, final IListStoreGetCbk cbk) {
-        cbk.onGetFinished(mConsumables.get(index));
+    public void get(String id, final IListStoreGetCbk cbk) {
+        for (int i = 0; i < mConsumables.size(); i++) {
+            if (mConsumables.get(i).getId().equals(id)) {
+                cbk.onGetFinished(mConsumables.get(i));
+                return;
+            }
+        }
+
+        cbk.onGetFinished(null);
     }
 
     @Override
     public void deleteAll(final IListStoreDeleteAllCbk cbk) {
         mConsumables.clear();
-        cbk.onDeleteAllFinished();
+        cbk.onDeleteAllFinished(true);
     }
 
     @Override

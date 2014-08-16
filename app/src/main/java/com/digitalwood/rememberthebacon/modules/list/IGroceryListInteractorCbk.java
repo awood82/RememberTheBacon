@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Copyright 2014
  */
 public interface IGroceryListInteractorCbk {
-    public void onFinishedLoading(ArrayList<Consumable> consumables);
-    public void onFinishedSaving();
+    void onFinishedLoading(ArrayList<Consumable> consumables);
+    void onFinishedSaving();
+    void onFinishedTogglingBought(Consumable consumable);
 }

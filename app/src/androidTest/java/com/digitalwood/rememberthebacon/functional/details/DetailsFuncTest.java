@@ -34,10 +34,11 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragme
     }
 
     public void testUiEdit_InitialState_WidgetsArePrepopulated() {
+        Consumable c = new Consumable("Bacon");
         Intent intent = new Intent();
-        intent.putExtra(DetailsFragment.EXTRA_CONSUMABLE_INDEX, 0);
+        intent.putExtra(DetailsFragment.EXTRA_ID_OF_CONSUMABLE_TO_EDIT, c.getId());
         setActivityIntent(intent);
-        addItemToListStore("Bacon");
+        addItemToListStore(c);
         TestFragmentActivity activity = setUpActivity();
 
         EditText edit = (EditText) activity.findViewById(R.id.details_name_editText);
@@ -52,9 +53,9 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragme
     }*/
 
 
-    private void addItemToListStore(String name) {
+    private void addItemToListStore(Consumable consumable) {
         ListStore.getInstance(null).add(
-                new Consumable(name),
+                consumable,
                 new IListStoreAddCbk() {
                     @Override
                     public void onAddFinished(boolean result) {
@@ -67,7 +68,7 @@ public class DetailsFuncTest extends ActivityInstrumentationTestCase2<TestFragme
     private void cleanupListStore() {
         ListStore.getInstance(getActivity()).deleteAll(new IListStoreDeleteAllCbk() {
             @Override
-            public void onDeleteAllFinished() {
+            public void onDeleteAllFinished(boolean success) {
                 mCallbackFired = true;
             }
         });

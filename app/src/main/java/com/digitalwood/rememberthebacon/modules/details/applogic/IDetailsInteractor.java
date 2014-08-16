@@ -10,7 +10,7 @@ import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInterac
  */
 public interface IDetailsInteractor {
 
-    public void saveConsumable(int index, Consumable c, IDetailsInteractorSaveCbk cbk);
+    void saveConsumable(String id, Consumable newConsumable, IDetailsInteractorSaveCbk cbk);
 
-    public void loadConsumable(int index, IDetailsInteractorLoadCbk cbk);
+    void loadConsumable(String id, IDetailsInteractorLoadCbk cbk);
 }

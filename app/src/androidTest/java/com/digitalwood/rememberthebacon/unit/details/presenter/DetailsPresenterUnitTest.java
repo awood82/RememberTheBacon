@@ -34,7 +34,7 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
         DetailsInteractor mockInteractor = mock(DetailsInteractor.class);
         DetailsPresenter presenter = new DetailsPresenter(mockView, null, mockInteractor);
 
-        presenter.onResume(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET);
+        presenter.onResume(DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET);
 
         verify(mockView, times(1)).showKeyboard();
     }
@@ -59,8 +59,33 @@ public class DetailsPresenterUnitTest extends AndroidTestCase {
         presenter.okButtonPressed();
 
         ArgumentCaptor<Consumable> captor = ArgumentCaptor.forClass(Consumable.class);
-        verify(mockInteractor).saveConsumable(anyInt(), captor.capture(), any(IDetailsInteractorSaveCbk.class));
+        verify(mockInteractor).saveConsumable(
+                anyString(),
+                captor.capture(),
+                any(IDetailsInteractorSaveCbk.class));
         assertEquals("Eggs", captor.getValue().getName());
+    }
+
+    public void testOnFinishedSaving_IfWasSuccessIsFalse_SendsCancel() {
+        IDetailsView mockView = mock(IDetailsView.class);
+        IDetailsWireframe mockWireframe = mock(DetailsWireframe.class);
+        IDetailsInteractor mockInteractor = mock(DetailsInteractor.class);
+        DetailsPresenter presenter = new DetailsPresenter(mockView, mockWireframe, mockInteractor);
+
+        presenter.onFinishedSaving(false, false);
+
+        verify(mockWireframe).navigateCancelPressed();
+    }
+
+    public void testOnFinishedSaving_IfWasSuccessIsTrueWasAddedIsFalse_SendsOk() {
+        IDetailsView mockView = mock(IDetailsView.class);
+        IDetailsWireframe mockWireframe = mock(DetailsWireframe.class);
+        IDetailsInteractor mockInteractor = mock(DetailsInteractor.class);
+        DetailsPresenter presenter = new DetailsPresenter(mockView, mockWireframe, mockInteractor);
+
+        presenter.onFinishedSaving(true, false);
+
+        verify(mockWireframe).navigateOkPressed();
     }
 
 }

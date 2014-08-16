@@ -1,9 +1,6 @@
 package com.digitalwood.rememberthebacon.modules.details.applogic;
 
-import android.content.Context;
-
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
-import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreAddCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreSetCbk;
@@ -25,18 +22,20 @@ public class DetailsInteractor implements IDetailsInteractor {
     }
 
     @Override
-    public void saveConsumable(int index, Consumable c, final IDetailsInteractorSaveCbk cbk) {
-        if (c.getName().isEmpty()) {
+    public void saveConsumable(final String id, final Consumable newConsumable, final IDetailsInteractorSaveCbk cbk) {
+        if (newConsumable.getName().isEmpty()) {
             cbk.onFinishedSaving(false, false);
-        } else if (index == DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET) {
-            mListStore.add(c, new IListStoreAddCbk() {
+        } else if (id.equals(DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET)) {
+            mListStore.add(newConsumable, new IListStoreAddCbk() {
                 @Override
                 public void onAddFinished(boolean result) {
                     cbk.onFinishedSaving(result, true);
                 }
             });
+        //} else if (newConsumable.getName().equals(id)) { //TODO
+        //    cbk.onFinishedSaving(false, false);
         } else {
-            mListStore.set(index, c, new IListStoreSetCbk() {
+            mListStore.set(id, newConsumable, new IListStoreSetCbk() {
                 @Override
                 public void onSetFinished(boolean result) {
                     cbk.onFinishedSaving(result, false);
@@ -46,11 +45,11 @@ public class DetailsInteractor implements IDetailsInteractor {
     }
 
     @Override
-    public void loadConsumable(int index, final IDetailsInteractorLoadCbk cbk) {
-        if (index == DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET) {
+    public void loadConsumable(String id, final IDetailsInteractorLoadCbk cbk) {
+        if (id.equals(DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET)) {
             cbk.onFinishedLoading(null);
         } else {
-            mListStore.get(index, new IListStoreGetCbk() {
+            mListStore.get(id, new IListStoreGetCbk() {
                 @Override
                 public void onGetFinished(Consumable consumable) {
                     cbk.onFinishedLoading(consumable);

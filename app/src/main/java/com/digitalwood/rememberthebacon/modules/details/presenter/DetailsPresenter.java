@@ -18,6 +18,7 @@ public class DetailsPresenter
     private IDetailsWireframe mWireframe;
     private IDetailsInteractor mInteractor;
     private int mIndex;
+    private String mIdOfConsumableToEdit;
     private Consumable mConsumableToEdit;
 
     public DetailsPresenter(IDetailsView view, IDetailsWireframe wireframe, IDetailsInteractor interactor) {
@@ -27,9 +28,9 @@ public class DetailsPresenter
     }
 
     @Override
-    public void onResume(int index) {
-        mIndex = index;
-        mInteractor.loadConsumable(index, this);
+    public void onResume(String id) {
+        mIdOfConsumableToEdit = id;
+        mInteractor.loadConsumable(id, this);
         mView.showKeyboard();
     }
 
@@ -42,7 +43,7 @@ public class DetailsPresenter
     public void okButtonPressed() {
         Consumable updatedConsumable = new Consumable(mConsumableToEdit);
         updatedConsumable.setName(mView.getItemName());
-        mInteractor.saveConsumable(mIndex, updatedConsumable, this);
+        mInteractor.saveConsumable(mIdOfConsumableToEdit, updatedConsumable, this);
     }
 
     @Override
@@ -52,11 +53,13 @@ public class DetailsPresenter
 
     @Override
     public void onFinishedLoading(Consumable consumable) {
+        mConsumableToEdit = consumable;
         if (consumable == null) {
-            mConsumableToEdit = new Consumable();
+            //mConsumableToEdit = new Consumable();
+            //mConsumableToEdit.setId(mIdOfConsumableToEdit);
             mView.setTitle("Add New");
         } else {
-            mConsumableToEdit = consumable;
+            //mConsumableToEdit = consumable;
             mView.setItemName(consumable.getName());
             mView.setTitle("Edit Details");
         }
@@ -64,6 +67,10 @@ public class DetailsPresenter
 
     @Override
     public void onFinishedSaving(boolean wasSuccess, boolean wasAdded) {
-        mWireframe.navigateOkPressed();
+        if (wasSuccess == true) {
+            mWireframe.navigateOkPressed();
+        } else {
+            mWireframe.navigateCancelPressed();
+        }
     }
 }

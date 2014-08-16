@@ -1,12 +1,11 @@
 package com.digitalwood.rememberthebacon.modules.list.applogic;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.digitalwood.rememberthebacon.R;
-import com.digitalwood.rememberthebacon.modules.details.ui.DetailsActivity;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 
 /**
@@ -24,7 +23,7 @@ public class GroceryListWireframe implements IGroceryListWireframe {
     @Override
     public void navigateAddPressed() {
         FragmentManager fm = mFragmentActivity.getSupportFragmentManager();
-        Fragment fragment = DetailsFragment.newInstance(-1);
+        Fragment fragment = DetailsFragment.newInstance(DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET);
         fm.beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(null)
@@ -32,9 +31,9 @@ public class GroceryListWireframe implements IGroceryListWireframe {
     }
 
     @Override
-    public void navigateListItemPressed(int index) {
+    public void navigateListItemPressed(Consumable consumable) {
         FragmentManager fm = mFragmentActivity.getSupportFragmentManager();
-        Fragment fragment = DetailsFragment.newInstance(index);
+        Fragment fragment = DetailsFragment.newInstance(consumable.getId());
         fm.beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(null)

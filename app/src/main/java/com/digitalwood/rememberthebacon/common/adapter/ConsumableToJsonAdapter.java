@@ -18,7 +18,7 @@ public class ConsumableToJsonAdapter {
 
     public static JSONObject toJson(Consumable c) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put(JSON_ID, c.getId().toString());
+        json.put(JSON_ID, c.getId());
         json.put(JSON_NAME, c.getName());
         json.put(JSON_BOUGHT, c.isBought());
         return json;
@@ -26,7 +26,7 @@ public class ConsumableToJsonAdapter {
 
     public static Consumable fromJson(JSONObject jsonObject) throws JSONException {
         Consumable c = new Consumable();
-        c.setId(UUID.fromString(jsonObject.getString(JSON_ID)));
+        c.setId(jsonObject.getString(JSON_ID));
         c.setName(jsonObject.getString(JSON_NAME));
         c.setBought(jsonObject.getBoolean(JSON_BOUGHT));
         return c;

@@ -52,14 +52,17 @@ public class GroceryListPresenter implements IGroceryListPresenter, IGroceryList
     }
 
     @Override
-    public void onItemClicked(int position) {
-        mView.toggleItemBought(position);
-        mInteractor.toggleConsumableBought(position);
+    public void onItemClicked(final Consumable consumable) {
+        mInteractor.toggleConsumableBought(consumable, this);
     }
 
     @Override
-    public void onItemLongClicked(int position) {
-        //Consumable item = mInteractor.getConsumableAt(position);
-        mWireframe.navigateListItemPressed(position);
+    public void onItemLongClicked(final Consumable consumable) {
+        mWireframe.navigateListItemPressed(consumable);
+    }
+
+    @Override
+    public void onFinishedTogglingBought(final Consumable consumable) {
+        mView.toggleItemBought(consumable);
     }
 }

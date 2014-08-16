@@ -1,15 +1,12 @@
 package com.digitalwood.rememberthebacon.common.view;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 import com.digitalwood.rememberthebacon.R;
-import com.digitalwood.rememberthebacon.common.view.SingleFragmentActivity;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
 import com.digitalwood.rememberthebacon.modules.list.ui.GroceryListFragment;
-import com.digitalwood.rememberthebacon.modules.navdrawer.ui.NavigationDrawerFragment;
 
 /**
  * Created by Andrew on 7/27/2014.
@@ -41,9 +38,12 @@ public class TestFragmentActivity extends MasterActivity {
                 mFragmentUnderTest = GroceryListFragment.newInstance(testFile);
                 break;
             case R.layout.fragment_details:
-                int consumableIndex = getIntent()
-                        .getIntExtra(DetailsFragment.EXTRA_CONSUMABLE_INDEX, -1);
-                mFragmentUnderTest = DetailsFragment.newInstance(consumableIndex);
+                String id = getIntent()
+                        .getStringExtra(DetailsFragment.EXTRA_ID_OF_CONSUMABLE_TO_EDIT);
+                if (id == null) {
+                    id = DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET;
+                }
+                mFragmentUnderTest = DetailsFragment.newInstance(id);
                 break;
             default:
                 assert(false);

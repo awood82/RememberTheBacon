@@ -102,7 +102,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         waitForCallback();
         assertEquals(0, sizeCbk.mSize);
     }
-
+/*
     public void testSet_NegativeIndex_ReturnsFalse() {
         IListStore store = getListStoreInstance();
 
@@ -125,15 +125,17 @@ public class ListStoreUnitTest extends AndroidTestCase{
 
         assertEquals(false, setCbk.mResult);
     }
-
+*/
     public void testSet_ValidIndex_ReturnsTrue() {
         IListStore store = getListStoreInstance();
         TestAddCbk addCbk = getTestAddCbk();
-        store.add(new Consumable("Bacon"), addCbk);
+        Consumable consumable = new Consumable("Bacon");
+        consumable.setId("1");
+        store.add(consumable, addCbk);
         waitForCallback();
 
         TestSetCbk setCbk = getTestSetCbk();
-        store.set(0, new Consumable("Eggs"), setCbk);
+        store.set("1", new Consumable("Eggs"), setCbk);
         waitForCallback();
 
         assertEquals(true, setCbk.mResult);
@@ -142,15 +144,17 @@ public class ListStoreUnitTest extends AndroidTestCase{
     public void testSet_ValidIndex_ChangesTheValue() {
         IListStore store = getListStoreInstance();
         TestAddCbk addCbk = getTestAddCbk();
-        store.add(new Consumable("Bacon"), addCbk);
+        Consumable consumable = new Consumable("Bacon");
+        consumable.setId("1");
+        store.add(consumable, addCbk);
         waitForCallback();
 
         TestSetCbk setCbk = getTestSetCbk();
-        store.set(0, new Consumable("Eggs"), setCbk);
+        store.set("1", new Consumable("Eggs"), setCbk);
         waitForCallback();
 
         TestGetCbk getCbk = getTestGetCbk();
-        store.get(0, getCbk);
+        store.get("1", getCbk);
         waitForCallback();
         assertEquals("Eggs", getCbk.mConsumable.getName());
     }
@@ -265,7 +269,7 @@ public class ListStoreUnitTest extends AndroidTestCase{
         IListStore store = getListStoreInstance();
         store.deleteAll(new IListStoreDeleteAllCbk() {
             @Override
-            public void onDeleteAllFinished() {
+            public void onDeleteAllFinished(boolean success) {
                 mCallbackFired = true;
             }
         });

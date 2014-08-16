@@ -5,5 +5,5 @@ package com.digitalwood.rememberthebacon.common.datastore.callbacks;
  * Copyright 2014
  */
 public interface IListStoreDeleteAllCbk {
-    public void onDeleteAllFinished();
+    public void onDeleteAllFinished(boolean success);
 }

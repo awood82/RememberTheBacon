@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.digitalwood.rememberthebacon.R;
 import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
+import com.digitalwood.rememberthebacon.common.model.Consumable;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsWireframe;
 import com.digitalwood.rememberthebacon.modules.details.presenter.DetailsPresenter;
@@ -24,20 +25,19 @@ import com.digitalwood.rememberthebacon.modules.details.presenter.IDetailsPresen
  * Copyright 2014
  */
 public class DetailsFragment extends Fragment implements IDetailsView, View.OnClickListener {
-    public static final String EXTRA_CONSUMABLE_INDEX =
-            "com.digitalwood.rememberthebacon.consumable_index";
-    public static final int EXTRA_CONSUMABLE_INDEX_NOT_SET = -1;
+    public static final String EXTRA_ID_OF_CONSUMABLE_TO_EDIT =
+            "com.digitalwood.rememberthebacon.consumable_id";
+    public static final String EXTRA_CONSUMABLE_TO_EDIT_NOT_SET = "";
     private IDetailsPresenter mPresenter;
     private EditText mEditName;
     private Button mOkButton;
     private Button mCancelButton;
-    private int mConsumableIndex;
+    private String mIdOfConsumableToEdit;
 
-    public static DetailsFragment newInstance(int consumableIndex) {
-        Bundle args = new Bundle();
-        args.putInt(EXTRA_CONSUMABLE_INDEX, consumableIndex);
-
+    public static DetailsFragment newInstance(String id) {
         DetailsFragment fragment = new DetailsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(EXTRA_ID_OF_CONSUMABLE_TO_EDIT, id);
         fragment.setArguments(args);
 
         return fragment;
@@ -53,9 +53,7 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
                 new DetailsWireframe(getActivity()),
                 new DetailsInteractor(listStore));
 
-        mConsumableIndex = getArguments().getInt(
-                EXTRA_CONSUMABLE_INDEX,
-                EXTRA_CONSUMABLE_INDEX_NOT_SET);
+        mIdOfConsumableToEdit = getArguments().getString(EXTRA_ID_OF_CONSUMABLE_TO_EDIT);
     }
 
     @Override
@@ -77,7 +75,7 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.onResume(mConsumableIndex);
+        mPresenter.onResume(mIdOfConsumableToEdit);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class DetailsFragment extends Fragment implements IDetailsView, View.OnCl
     // IDetailsView
     @Override
     public void setTitle(String title) {
-        getActivity().setTitle(title); //R.string.details_title);
+        getActivity().setTitle(title);
     }
 
     @Override

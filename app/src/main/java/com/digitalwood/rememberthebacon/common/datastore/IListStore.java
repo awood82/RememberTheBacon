@@ -17,9 +17,9 @@ import java.util.ListIterator;
 public interface IListStore {
     void add(Consumable consumable, final IListStoreAddCbk cbk);
 
-    void set(int index, Consumable consumable, final IListStoreSetCbk cbk);
+    void set(String id, Consumable newConsumable, final IListStoreSetCbk cbk);
 
-    void get(int index, final IListStoreGetCbk cbk);
+    void get(String id, final IListStoreGetCbk cbk);
 
     void deleteAll(final IListStoreDeleteAllCbk cbk);
 

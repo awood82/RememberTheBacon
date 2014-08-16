@@ -19,7 +19,7 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
     private static final String TEST_LIST_STORE_FILENAME = "mytest.json";
     private static final String FIRST_ITEM_NAME = "Bacon";
-    private boolean mCallbackFired;
+    private volatile boolean mCallbackFired;
 
     // NOTE: Only needed while ListStore is a Singleton
     @Override
@@ -27,7 +27,7 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
         super.tearDown();
         ListStore.getInstance(getContext()).deleteAll(new IListStoreDeleteAllCbk() {
             @Override
-            public void onDeleteAllFinished() {
+            public void onDeleteAllFinished(boolean success) {
                 mCallbackFired = true;
             }
         });
@@ -128,6 +128,10 @@ public class GroceryListInteractorUnitTest extends AndroidTestCase {
 
         @Override
         public void onFinishedSaving() {
+        }
+
+        @Override
+        public void onFinishedTogglingBought(Consumable consumable) {
         }
 
         public ArrayList<Consumable> getConsumables() {

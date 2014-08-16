@@ -206,7 +206,7 @@ public class GroceryListFuncTest extends ActivityInstrumentationTestCase2<TestFr
     private void deleteConsumables() {
         ListStore.getInstance(getActivity()).deleteAll(new IListStoreDeleteAllCbk() {
             @Override
-            public void onDeleteAllFinished() {
+            public void onDeleteAllFinished(boolean success) {
                 mCallbackFired = true;
             }
         });

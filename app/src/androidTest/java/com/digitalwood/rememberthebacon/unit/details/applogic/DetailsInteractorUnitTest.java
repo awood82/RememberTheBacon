@@ -2,11 +2,10 @@ package com.digitalwood.rememberthebacon.unit.details.applogic;
 
 import android.test.AndroidTestCase;
 
-import com.digitalwood.rememberthebacon.common.datastore.IListStore;
 import com.digitalwood.rememberthebacon.common.datastore.ListStore;
 import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreDeleteAllCbk;
+import com.digitalwood.rememberthebacon.common.datastore.callbacks.IListStoreGetCbk;
 import com.digitalwood.rememberthebacon.common.model.Consumable;
-import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorLoadCbk;
 import com.digitalwood.rememberthebacon.modules.details.applogic.DetailsInteractor;
 import com.digitalwood.rememberthebacon.modules.details.handlers.IDetailsInteractorSaveCbk;
 import com.digitalwood.rememberthebacon.modules.details.ui.DetailsFragment;
@@ -30,7 +29,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         super.tearDown();
         ListStore.getInstance(getContext()).deleteAll(new IListStoreDeleteAllCbk() {
             @Override
-            public void onDeleteAllFinished() {
+            public void onDeleteAllFinished(boolean success) {
                 mCallbackFired= true;
             }
         });
@@ -43,7 +42,7 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
         TestSaveCbk saveCbk = getNewTestSaveCbk();
         interactor.saveConsumable(
-                DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET,
+                DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET,
                 c,
                 saveCbk);
         waitForCallback();
@@ -56,7 +55,10 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         Consumable c = new Consumable("Bacon");
 
         TestSaveCbk saveCbk = getNewTestSaveCbk();
-        interactor.saveConsumable(DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET, c, saveCbk);
+        interactor.saveConsumable(
+                DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET,
+                c,
+                saveCbk);
         waitForCallback();
 
         assertEquals(true, saveCbk.mWasSuccess);
@@ -65,11 +67,11 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
     public void testSaveConsumable_EditDetailsWithValidName_Succeeds() {
         DetailsInteractor interactor = getNewInteractor();
-        addItem(interactor, "Vegetables");
-        Consumable c = new Consumable("Bacon");
+        Consumable c1 = addItem(interactor, "Vegetables");
+        Consumable c2 = new Consumable("Bacon");
 
         TestSaveCbk saveCbk = getNewTestSaveCbk();
-        interactor.saveConsumable(0, c, saveCbk);
+        interactor.saveConsumable(c1.getId(), c2, saveCbk);
         waitForCallback();
 
         assertEquals(true, saveCbk.mWasSuccess);
@@ -78,10 +80,23 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
     public void testSaveConsumable_EditDetailsWithEmptyName_Fails() {
         DetailsInteractor interactor = getNewInteractor();
-        Consumable c = new Consumable("");
+        Consumable c1 = new Consumable("bacon");
+        Consumable c2 = new Consumable("");
 
         TestSaveCbk saveCbk = getNewTestSaveCbk();
-        interactor.saveConsumable(0, c, saveCbk);
+        interactor.saveConsumable(c1.getId(), c2, saveCbk);
+        waitForCallback();
+
+        assertEquals(false, saveCbk.mWasSuccess);
+    }
+
+    public void testSaveConsumable_EditDetailsWithNameUnchanged_Fails() {
+        DetailsInteractor interactor = getNewInteractor();
+        Consumable c1 = new Consumable("bacon");
+        Consumable c2 = new Consumable("bacon");
+
+        TestSaveCbk saveCbk = getNewTestSaveCbk();
+        interactor.saveConsumable(c1.getId(), c2, saveCbk);
         waitForCallback();
 
         assertEquals(false, saveCbk.mWasSuccess);
@@ -89,35 +104,26 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
 
     public void testSaveConsumable_EditDetailsWithChangedName_ChangesTheItem() {
         DetailsInteractor interactor = getNewInteractor();
-        addItem(interactor, "Vegetables");
+        Consumable c1 = addItem(interactor, "Vegetables");
 
-        editItem(interactor, 0, "Bacon");
+        Consumable edited = editItem(interactor, c1, "Bacon");
 
-        TestLoadCbk cbk = getNewTestLoadCbk();
-        interactor.loadConsumable(0, cbk);
-        waitForCallback();
-        assertEquals("Bacon", cbk.mConsumable.getName());
+        assertEquals("Bacon", getItem(c1.getId()).getName());
     }
 
     public void testSaveConsumable_EditDetailsWithMultipleItemsAdded_ChangesTheItem() {
         DetailsInteractor interactor = getNewInteractor();
-        addItem(interactor, "Bacon");
-        addItem(interactor, "Bacon 2");
-        addItem(interactor, "Bacon 3");
+        Consumable c1 = addItem(interactor, "Bacon 1");
+        Consumable c2 = addItem(interactor, "Bacon 2");
+        Consumable c3 = addItem(interactor, "Bacon 3");
 
-        editItem(interactor, 1, "Eggs");
+        Consumable edited2 = editItem(interactor, c2, "Eggs");
 
-        TestLoadCbk cbk = getNewTestLoadCbk();
-        interactor.loadConsumable(0, cbk);
-        waitForCallback();
-        assertEquals("Bacon", cbk.mConsumable.getName());
-        interactor.loadConsumable(1, cbk);
-        waitForCallback();
-        assertEquals("Eggs", cbk.mConsumable.getName());
-        interactor.loadConsumable(2, cbk);
-        waitForCallback();
-        assertEquals("Bacon 3", cbk.mConsumable.getName());
+        assertEquals("Bacon 1", getItem(c1.getId()).getName());
+        assertEquals("Eggs", getItem(c2.getId()).getName());
+        assertEquals("Bacon 3", getItem(c3.getId()).getName());
     }
+
 
 
 
@@ -125,22 +131,8 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         return new DetailsInteractor(ListStore.getInstance(getContext()));
     }
 
-    private TestLoadCbk getNewTestLoadCbk() {
-        return new TestLoadCbk();
-    }
-
     private TestSaveCbk getNewTestSaveCbk() {
         return new TestSaveCbk();
-    }
-
-    private class TestLoadCbk implements IDetailsInteractorLoadCbk {
-        private Consumable mConsumable;
-
-        @Override
-        public void onFinishedLoading (Consumable consumable) {
-            mConsumable = consumable;
-            mCallbackFired = true;
-        }
     }
 
     private class TestSaveCbk implements IDetailsInteractorSaveCbk {
@@ -155,10 +147,11 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         }
     }
 
-    private void addItem(DetailsInteractor interactor, String name) {
+    private Consumable addItem(DetailsInteractor interactor, String name) {
+        Consumable consumable = new Consumable(name);
         interactor.saveConsumable(
-                DetailsFragment.EXTRA_CONSUMABLE_INDEX_NOT_SET,
-                new Consumable(name),
+                DetailsFragment.EXTRA_CONSUMABLE_TO_EDIT_NOT_SET,
+                consumable,
                 new IDetailsInteractorSaveCbk() {
                     @Override
                     public void onFinishedSaving(boolean wasSuccess, boolean wasAdded) {
@@ -167,10 +160,17 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
                 });
 
         waitForCallback();
+
+        return consumable;
     }
 
-    private void editItem(DetailsInteractor interactor, int index, String name) {
-        interactor.saveConsumable(index, new Consumable(name), new IDetailsInteractorSaveCbk() {
+    private Consumable editItem(DetailsInteractor interactor, Consumable old, String name) {
+        Consumable newConsumable = new Consumable(old);
+        newConsumable.setName(name);
+        interactor.saveConsumable(
+                old.getId(),
+                newConsumable,
+                new IDetailsInteractorSaveCbk() {
             @Override
             public void onFinishedSaving(boolean wasSuccess, boolean wasAdded) {
                 mCallbackFired = true;
@@ -178,6 +178,22 @@ public class DetailsInteractorUnitTest extends AndroidTestCase {
         });
 
         waitForCallback();
+
+        return newConsumable;
+    }
+
+    private Consumable getItem(String id) {
+        final Consumable[] c = new Consumable[1];
+        ListStore.getInstance(mContext).get(id, new IListStoreGetCbk() {
+            @Override
+            public void onGetFinished(Consumable consumable) {
+                c[0] = consumable;
+                mCallbackFired = true;
+            }
+        });
+        waitForCallback();
+
+        return c[0];
     }
 
     private void waitForCallback() {

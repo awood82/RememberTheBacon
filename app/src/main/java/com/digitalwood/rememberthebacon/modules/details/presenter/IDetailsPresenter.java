@@ -1,5 +1,7 @@
 package com.digitalwood.rememberthebacon.modules.details.presenter;
 
+import com.digitalwood.rememberthebacon.common.model.Consumable;
+
 import java.util.UUID;
 
 /**
@@ -8,7 +10,7 @@ import java.util.UUID;
  */
 public interface IDetailsPresenter {
 
-    public void onResume(int index);
+    public void onResume(String id);
 
     public void onPause();
 
