@@ -24,17 +24,24 @@ public class DetailsWireframeUnitTest extends ActivityUnitTestCase<TestFragmentA
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mIntent = new Intent(this.getInstrumentation().getContext(), TestFragmentActivity.class);
-        //mIntent.setClassName("com.digitalwood.rememberthebacon.common.view", "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
-        startActivity(mIntent, null, null);
+        //mIntent = new Intent(this.getInstrumentation().getContext(), TestFragmentActivity.class);
+        mIntent = new Intent();
+        mIntent.setClassName(
+                "com.digitalwood.rememberthebacon.common.view",
+                "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
+        // Don't call startActivity from setUp()!
+        // http://developer.android.com/reference/android/test/ActivityUnitTestCase.html#startActivity(android.content.Intent, android.os.Bundle, java.lang.Object)
+        //startActivity(mIntent, null, null);
     }
 
     public void testWireframe_Preconditions() {
+        startActivity(mIntent, null, null);
         TestFragmentActivity activity = getActivity();
         assertNotNull(activity);
     }
 
     public void testWireframe_WhenBackButtonIsPressed_ActivityIsFinished() {
+        startActivity(mIntent, null, null);
         TestFragmentActivity activity = getActivity();
 
         activity.onBackPressed();
@@ -43,9 +50,9 @@ public class DetailsWireframeUnitTest extends ActivityUnitTestCase<TestFragmentA
     }
 
     public void testWireframe_WhenOkButtonIsPressed_ActivityIsFinished() throws InterruptedException{
+        startActivity(mIntent, null, null);
         TestFragmentActivity activity = getActivity();
         View v = activity.getFragmentUnderTest().getView();
-        //View v = getFragmentView(activity);
         Button ok = (Button) v.findViewById(R.id.details_ok_button);
 
         ok.performClick();
@@ -54,9 +61,9 @@ public class DetailsWireframeUnitTest extends ActivityUnitTestCase<TestFragmentA
     }
 
     public void testWireframe_WhenCancelButtonIsPressed_ActivityIsFinished() {
+        startActivity(mIntent, null, null);
         TestFragmentActivity activity = getActivity();
         View v = activity.getFragmentUnderTest().getView();
-        //View v = getFragmentView(activity);
         Button cancel = (Button) v.findViewById(R.id.details_cancel_button);
 
         cancel.performClick();
