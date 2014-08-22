@@ -3,6 +3,7 @@ package com.digitalwood.rememberthebacon.common.view;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseUser;
 
 /**
  * Created by Andrew on 8/6/2014.
@@ -19,5 +20,8 @@ public class RememberTheBaconApplication extends Application {
                 this,
                 "jDGd9RxDbhqSYNigzBItbllUFfclXvg2fAVWSoY9",
                 "UyfioaJyqzVqWfWX1lDp15cQNe7KgyTH5KUtSqJc");
+        ParseUser.enableAutomaticUser();
+        //ParseACL defaultACL = new ParseACL();
+        //ParseACL.setDefaultACL(defaultACL, true);
     }
 }

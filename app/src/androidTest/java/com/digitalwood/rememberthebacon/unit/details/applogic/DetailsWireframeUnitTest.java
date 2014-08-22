@@ -24,11 +24,11 @@ public class DetailsWireframeUnitTest extends ActivityUnitTestCase<TestFragmentA
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        //mIntent = new Intent(this.getInstrumentation().getContext(), TestFragmentActivity.class);
-        mIntent = new Intent();
-        mIntent.setClassName(
-                "com.digitalwood.rememberthebacon.common.view",
-                "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
+        mIntent = new Intent(this.getInstrumentation().getContext(), TestFragmentActivity.class);
+        //mIntent = new Intent();
+        //mIntent.setClassName(
+        //        "com.digitalwood.rememberthebacon.common.view",
+        //        "com.digitalwood.rememberthebacon.common.view.TestFragmentActivity");
         // Don't call startActivity from setUp()!
         // http://developer.android.com/reference/android/test/ActivityUnitTestCase.html#startActivity(android.content.Intent, android.os.Bundle, java.lang.Object)
         //startActivity(mIntent, null, null);
